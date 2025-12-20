@@ -1,0 +1,5 @@
+aiogram==3.12.0
+sqlalchemy==2.0.36
+aiohttp==3.10.9
+cryptography==42.0.8
+python-dotenv==1.0.1
