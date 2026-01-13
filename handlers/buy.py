@@ -134,3 +134,59 @@ async def process_quantity(message: Message, state: FSMContext):
 
     except ValueError:
         await message.answer("❌ Пожалуйста, введите корректное число!")
+
+
+@router.callback_query(F.data == "back_to_buy")
+async def back_to_buy_menu(callback: CallbackQuery, state: FSMContext):
+    await state.clear()
+    buy_text = """
+    🛍 *Купить аккаунты*
+
+    @Venmo_Seller_Bot
+
+    *Шаг 1 из 3... Выбор количества*
+
+    **Решил купить аккаунты? Ты на верном пути!**
+    Наши преимущества:
+
+    • Гарантируем возврат в случае проблемы
+    • Платежные системы высшего уровня
+    • Удобные способы оплаты
+    • Быстрая техподдержка 24/7
+
+    ---
+
+    *Прайс-лист:*
+    • 1-20 шт: 105$/шт
+    • 20-50 шт: 95$/шт
+    • 50-100 шт: 85$/шт
+
+    Выбери готовый пакет или укажи своё количество:
+    """
+
+    await callback.message.edit_text(
+        buy_text,
+        reply_markup=kb.buy_menu(),
+        parse_mode="Markdown"
+    )
+
+
+@router.callback_query(F.data == "back_to_payment")
+async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    
+    payment_text = f"""
+    🛒 *Подтверждение заказа*
+
+    Товар: Venmo Accounts
+    Количество: {data.get('quantity', 1)} шт
+    Сумма: {data.get('price', 105)}$
+
+    Все верно? Выберите способ оплаты:
+    """
+
+    await callback.message.edit_text(
+        payment_text,
+        reply_markup=kb.payment_methods(),
+        parse_mode="Markdown"
+    )

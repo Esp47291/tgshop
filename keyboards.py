@@ -46,6 +46,11 @@ def cryptobot_payment():
     builder.adjust(1)
     return builder.as_markup()
 
+def back_to_payment():
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="« Назад к выбору оплаты", callback_data="back_to_payment"))
+    return builder.as_markup()
+
 def crypto_networks():
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="USDT (TRC20)", callback_data="network_trc20"))
@@ -56,8 +61,14 @@ def crypto_networks():
     builder.adjust(2)
     return builder.as_markup()
 
+def back_to_buy():
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="« Назад к выбору количества", callback_data="back_to_buy"))
+    return builder.as_markup()
+
 def support_keyboard():
     builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="📝 Создать обращение", callback_data="create_ticket"))
     builder.add(InlineKeyboardButton(text="📞 Связаться с менеджером", url="https://t.me/VenmoSell_Manager"))
     builder.add(InlineKeyboardButton(text="📝 Оставить отзыв", callback_data="leave_review"))
     builder.add(InlineKeyboardButton(text="« Вернуться назад", callback_data="back_to_main"))

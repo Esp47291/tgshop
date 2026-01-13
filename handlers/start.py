@@ -50,13 +50,13 @@ async def cmd_start(message: Message):
         if ref_code.startswith('ref'):
             try:
                 referrer_id = int(ref_code[3:])
-            except:
+            except ValueError:
                 pass
 
     user = get_or_create_user(
         telegram_id=message.from_user.id,
-        username=message.from_user.username,
-        full_name=message.from_user.full_name,
+        username=message.from_user.username or "",
+        full_name=message.from_user.full_name or "",
         referrer_id=referrer_id
     )
 
