@@ -24,11 +24,16 @@ async def main():
     # Инициализация базы данных
     init_db()
 
+    # Логирование используемого токена (первые 20 символов для безопасности)
+    token_preview = config.BOT_TOKEN[:20] + "..." if len(config.BOT_TOKEN) > 20 else config.BOT_TOKEN
+    logger.info(f"Используется BOT_TOKEN: {token_preview} (из .env файла)")
+
     # Инициализация бота
     bot = Bot(
         token=config.BOT_TOKEN,
         default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN)
     )
+    
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
 

@@ -1,12 +1,14 @@
-from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
-from aiogram.filters import CommandStart, Command
+from datetime import datetime
+
+from aiogram import F, Router
+from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
 from sqlalchemy.orm import Session
+
+import config
 from database import SessionLocal, User
 import keyboards as kb
-from datetime import datetime
-import config
 
 router = Router()
 
@@ -41,6 +43,26 @@ def get_or_create_user(telegram_id: int, username: str, full_name: str, referrer
         return user
 
 
+async def send_welcome_menu(message: Message):
+    """Функция для отправки приветственного меню (работает на всех платформах)"""
+    user_name = message.from_user.first_name or "друг"
+    
+    welcome_text = f"""👋 Привет, {user_name}!
+
+Добро пожаловать в Brude Seller Bot ✨
+
+Давно хотел приобрести качественные Venmo аккаунты с балансом? Тебе определенно к нам! ⭐️
+
+Ниже располагается меню, ознакамливайся 🎲"""
+
+    # Отправляем одно сообщение с reply keyboard (работает на мобильных и веб)
+    await message.answer(
+        welcome_text,
+        parse_mode="HTML",
+        reply_markup=kb.main_menu()
+    )
+
+
 @router.message(CommandStart())
 async def cmd_start(message: Message):
     # Обработка реферальной ссылки
@@ -60,86 +82,79 @@ async def cmd_start(message: Message):
         referrer_id=referrer_id
     )
 
-    welcome_text = """
-    🏪 *Лучший магазин Venmo аккаунтов*
-
-    ⚡️ Быстро | 💰 Выгодно | ✅ Надёжно
-
-    *Бесплатно в течение недели:*
-    • Помощь с выбором лучшего Venmo аккаунта
-    • Гарантированная поддержка после покупки
-    • Уникальные условия для вашего бизнеса
-
-    👇 Выберите действие:
-    """
-
-    await message.answer(
-        welcome_text,
-        reply_markup=kb.main_menu(),
-        parse_mode="Markdown"
-    )
+    await send_welcome_menu(message)
 
 
+@router.message(Command("help"))
 @router.message(F.text == "🆘 Тех. Поддержка")
+@router.message(F.text == "Поддержка 🌐")
 async def support_handler(message: Message):
     support_text = """
-    🛠 *Техническая поддержка*
+🛎️ <b>Нужна помощь? Обращайся правильно!</b>
+🔹 Твой номер обращения: <code>#776825</code>
+🔹 Менеджер поддержки: @VenmoSell_Manager
 
-    @Venmo_Seller_Bot
+📌 <b>Правила обращения:</b>
+✅ Будь вежлив и точен – опиши проблему четко и без лишних сообщений.
+✅ Не спрашивай о статусе чека – обработка занимает до 15 минут.
+✅ Нет спаму! Одно подробное сообщение > 10 коротких.
 
-    ---
-    *Нужна помощь? Обращайся правильно!*
-    • Твой номер обращения: #939183
-    • Менеджер поддержки: @VenmoSell_Manager
+🚀 <i>Мы решим вопрос быстро, если ты следуешь этим простым правилам.</i>
 
-    ---
-    *Правила обращения:*
-    • Будь вежлив и точен – опиши проблему четко
-    • Не спрашивай о статусе чека – обработка до 15 минут
-    • Нет спаму! Одно подробное сообщение > 10 коротких
+👉 Просто перешли этот номер (<code>#776825</code>) менеджеру – и жди ответа!
 
-    ---
-    *Мы решим вопрос быстро, если ты следуешь правилам!*
+<b>P.S.</b> Чем точнее опишешь проблему, тем быстрее получишь решение. 😉
 
-    **PS. Чем точнее опишешь проблему, тем быстрее получишь решение.**
+🔍 <b>Хочешь убедиться в нашей надежности?</b>
+📢 Присоединяйся к нашему официальному каналу:
+👉 <a href="https://t.me/your_channel">Отзывы & Анонсы</a>
+
+<b>Здесь ты найдешь:</b>
+✅ Реальные отзывы покупателей с пруфами
+✅ Акции и конкурсы с крутыми призами
+✅ Свежие анонсы обновлений и спецпредложений
+
+<b>Подпишись сейчас – не упусти выгоду!</b> 🎁
+
+<b>P.S.</b> Все честно – мы ценим твое доверие! 😊
     """
 
     await message.answer(
         support_text,
         reply_markup=kb.support_keyboard(),
-        parse_mode="Markdown"
+        parse_mode="HTML"
     )
 
 
+@router.message(Command("reviews"))
 @router.message(F.text == "✅ Удачные сделки")
+@router.message(F.text == "Удачные сделки ✅")
 async def successful_deals(message: Message):
     deals_text = """
-    ✅ *Удачные сделки*
+ 🔍 <b>Хочешь убедиться в нашей надежности?</b>
+📢 Присоединяйся к нашему официальному каналу:
+👉 <a href="https://t.me/your_channel">Отзывы & Анонсы</a>
 
-    @Venmo_Seller_Bot
+<b>Здесь ты найдешь:</b>
+✅ Реальные отзывы покупателей с пруфами
+✅ Акции и конкурсы с крутыми призами
+✅ Свежие анонсы обновлений и спецпредложений
 
-    Хочешь убедиться в нашей надежности?
-    Присоединяйся к официальному каналу:
-    • Отзывы & Анонсы
+<b>Подпишись сейчас – не упусти выгоду!</b> 🎁
 
-    Здесь ты найдешь:
-    • Реальные отзывы покупателей с пруфами
-    • Акции и конкурсы с крутыми призами
-    • Свежие анонсы обновлений и спецпредложений
-
-    [Подпишись сейчас](https://t.me/reviews_channel) – не упусти выгоду!
-
-    PS. Все честно – мы ценим твое доверие!
+<b>P.S.</b> Все честно – мы ценим твое доверие! 😊
     """
 
     await message.answer(
         deals_text,
-        parse_mode="Markdown",
+        parse_mode="HTML",
         disable_web_page_preview=True
     )
 
 
 @router.message(F.text == "📊 FAQ")
+@router.message(F.text == "FAQ")
+@router.message(F.text == "FAQ ❓")
 async def faq_handler(message: Message):
     faq_text = """
     ❓ *Часто задаваемые вопросы*
@@ -171,4 +186,63 @@ async def faq_handler(message: Message):
 @router.callback_query(F.data == "back_to_main")
 async def back_to_main(callback: CallbackQuery):
     await callback.message.delete()
-    await cmd_start(callback.message)
+    await send_welcome_menu(callback.message)
+
+
+@router.message(F.text.in_(["🏠 Главное меню", "Главное меню", "Меню", "Назад"]))
+async def return_to_main_menu(message: Message):
+    """Обработчик для возврата в главное меню"""
+    await send_welcome_menu(message)
+
+
+# Обработчики для inline кнопок меню (для веб-версии)
+@router.callback_query(F.data == "menu_buy")
+async def menu_buy_handler(callback: CallbackQuery):
+    """Обработчик кнопки 'Купить аккаунты' из inline меню"""
+    await callback.answer()
+    # Имитируем нажатие на кнопку меню
+    callback.message.text = "Купить аккаунты 🛒"
+    from handlers.buy import buy_accounts
+    await buy_accounts(callback.message)
+
+
+@router.callback_query(F.data == "menu_support")
+async def menu_support_handler(callback: CallbackQuery):
+    """Обработчик кнопки 'Поддержка' из inline меню"""
+    await callback.answer()
+    callback.message.text = "Поддержка 🌐"
+    await support_handler(callback.message)
+
+
+@router.callback_query(F.data == "menu_faq")
+async def menu_faq_handler(callback: CallbackQuery):
+    """Обработчик кнопки 'FAQ' из inline меню"""
+    await callback.answer()
+    callback.message.text = "FAQ ❓"
+    await faq_handler(callback.message)
+
+
+@router.callback_query(F.data == "menu_reviews")
+async def menu_reviews_handler(callback: CallbackQuery):
+    """Обработчик кнопки 'Удачные сделки' из inline меню"""
+    await callback.answer()
+    callback.message.text = "Удачные сделки ✅"
+    await successful_deals(callback.message)
+
+
+@router.callback_query(F.data == "menu_referral")
+async def menu_referral_handler(callback: CallbackQuery):
+    """Обработчик кнопки 'Реферальная система' из inline меню"""
+    await callback.answer()
+    callback.message.text = "Реферальная система 👤"
+    from handlers.referral import referral_system
+    await referral_system(callback.message)
+
+
+@router.callback_query(F.data == "menu_earn")
+async def menu_earn_handler(callback: CallbackQuery):
+    """Обработчик кнопки 'Заработать' из inline меню"""
+    await callback.answer()
+    callback.message.text = "Заработать 💰"
+    from handlers.referral import earn_money
+    await earn_money(callback.message)

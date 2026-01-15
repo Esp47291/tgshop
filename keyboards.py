@@ -2,15 +2,38 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 def main_menu():
+    """Главное меню - работает на всех платформах (мобильная и веб-версия)"""
     builder = ReplyKeyboardBuilder()
-    builder.add(KeyboardButton(text="🛒 Купить аккаунты"))
-    builder.add(KeyboardButton(text="🆘 Тех. Поддержка"))
-    builder.add(KeyboardButton(text="📊 FAQ"))
-    builder.add(KeyboardButton(text="✅ Удачные сделки"))
-    builder.add(KeyboardButton(text="👥 Реферальная система"))
-    builder.add(KeyboardButton(text="💰 Заработать"))
-    builder.adjust(2)
-    return builder.as_markup(resize_keyboard=True)
+    # Первая кнопка на всю ширину
+    builder.add(KeyboardButton(text="Купить аккаунты 🛒"))
+    # Вторая и третья кнопки рядом
+    builder.add(KeyboardButton(text="Поддержка 🌐"))
+    builder.add(KeyboardButton(text="FAQ ❓"))
+    # Остальные по одной
+    builder.add(KeyboardButton(text="Удачные сделки ✅"))
+    builder.add(KeyboardButton(text="Реферальная система 👤"))
+    builder.add(KeyboardButton(text="Заработать 💰"))
+    # Настройка расположения: первая кнопка на всю ширину, затем 2 рядом, затем по одной
+    builder.adjust(1, 2, 1, 1, 1)
+    # Явно указываем параметры для совместимости с веб-версией
+    return builder.as_markup(
+        resize_keyboard=True, 
+        one_time_keyboard=False,
+        input_field_placeholder="Выберите действие из меню"
+    )
+
+
+def main_menu_inline():
+    """Альтернативное inline меню для веб-версии"""
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="🛒 Купить аккаунты", callback_data="menu_buy"))
+    builder.add(InlineKeyboardButton(text="🌐 Поддержка", callback_data="menu_support"))
+    builder.add(InlineKeyboardButton(text="❓ FAQ", callback_data="menu_faq"))
+    builder.add(InlineKeyboardButton(text="✅ Удачные сделки", callback_data="menu_reviews"))
+    builder.add(InlineKeyboardButton(text="👤 Реферальная система", callback_data="menu_referral"))
+    builder.add(InlineKeyboardButton(text="💰 Заработать", callback_data="menu_earn"))
+    builder.adjust(1, 2, 1, 1, 1)
+    return builder.as_markup()
 
 def back_button():
     builder = InlineKeyboardBuilder()
