@@ -1,6 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
+
 def main_menu():
     """Главное меню - работает на всех платформах (мобильная и веб-версия)"""
     builder = ReplyKeyboardBuilder()
@@ -15,9 +16,9 @@ def main_menu():
     builder.add(KeyboardButton(text="Заработать 💰"))
     # Настройка расположения: первая кнопка на всю ширину, затем 2 рядом, затем по одной
     builder.adjust(1, 2, 1, 1, 1)
-    # Явно указываем параметры для совместимости с веб-версией
+    # Явно указываем параметры для совместимости с веб-версии
     return builder.as_markup(
-        resize_keyboard=True, 
+        resize_keyboard=True,
         one_time_keyboard=False,
         input_field_placeholder="Выберите действие из меню"
     )
@@ -30,15 +31,59 @@ def main_menu_inline():
     builder.add(InlineKeyboardButton(text="🌐 Поддержка", callback_data="menu_support"))
     builder.add(InlineKeyboardButton(text="❓ FAQ", callback_data="menu_faq"))
     builder.add(InlineKeyboardButton(text="✅ Удачные сделки", callback_data="menu_reviews"))
-    builder.add(InlineKeyboardButton(text="👤 Реферальная система", callback_data="menu_referral"))
+    builder.add(InlineKeyboardButton(text="👤 Рефералка", callback_data="show_referral"))  # Изменено callback_data
     builder.add(InlineKeyboardButton(text="💰 Заработать", callback_data="menu_earn"))
     builder.adjust(1, 2, 1, 1, 1)
     return builder.as_markup()
 
+
+def create_welcome_keyboard():
+    """Создает inline клавиатуру для приветственного сообщения"""
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="🛒 Купить аккаунты", callback_data="menu_buy"))
+    builder.add(InlineKeyboardButton(text="🌐 Поддержка", callback_data="menu_support"))
+    builder.add(InlineKeyboardButton(text="❓ FAQ", callback_data="menu_faq"))
+    builder.add(InlineKeyboardButton(text="✅ Отзывы", callback_data="menu_reviews"))
+    builder.add(InlineKeyboardButton(text="👤 Рефералка", callback_data="show_referral"))  # Изменено callback_data
+    builder.add(InlineKeyboardButton(text="💰 Заработать", callback_data="menu_earn"))
+    builder.adjust(1, 2, 1, 1, 1)
+    return builder.as_markup()
+
+
+def referral_keyboard(user_id: int):
+    """Клавиатура для реферальной системы"""
+    builder = InlineKeyboardBuilder()
+
+    # Реферальная ссылка
+    ref_link = f"https://t.me/Brude_Seller_Bot?start=ref{user_id}"
+
+    builder.add(InlineKeyboardButton(
+        text="📋 Копировать ссылку",
+        callback_data=f"copy_link:{ref_link}"
+    ))
+    builder.add(InlineKeyboardButton(
+        text="💰 Заработать",
+        callback_data="menu_earn"
+    ))
+    builder.add(InlineKeyboardButton(
+        text="◀️ Назад в меню",
+        callback_data="back_to_main"
+    ))
+    builder.add(InlineKeyboardButton(
+        text="📞 Менеджер",
+        url="https://t.me/VenmoSell_Manager"
+    ))
+
+    builder.adjust(2, 1, 1)
+    return builder.as_markup()
+
+
+# Остальные функции остаются без изменений
 def back_button():
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="« Вернуться назад", callback_data="back_to_main"))
     return builder.as_markup()
+
 
 def buy_menu():
     builder = InlineKeyboardBuilder()
@@ -53,13 +98,15 @@ def buy_menu():
     builder.adjust(1)
     return builder.as_markup()
 
+
 def payment_methods():
-    builder = InlineKeyboardBuilder()
-    builder.add(InlineKeyboardButton(text="CryptoBot", callback_data="payment_cryptobot"))
-    builder.add(InlineKeyboardButton(text="Криптовалюта", callback_data="payment_crypto"))
-    builder.add(InlineKeyboardButton(text="« Назад", callback_data="back_to_buy"))
-    builder.adjust(1)
-    return builder.as_markup()
+    buttons = [
+        [InlineKeyboardButton(text="💳 Криптовалюта", callback_data="payment_crypto")],
+        [InlineKeyboardButton(text="🏦 Банковская карта", callback_data="payment_card")],
+        [InlineKeyboardButton(text="◀️ Назад", callback_data="back_to_buy")],
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
 
 def cryptobot_payment():
     builder = InlineKeyboardBuilder()
@@ -69,10 +116,12 @@ def cryptobot_payment():
     builder.adjust(1)
     return builder.as_markup()
 
+
 def back_to_payment():
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="« Назад к выбору оплаты", callback_data="back_to_payment"))
     return builder.as_markup()
+
 
 def crypto_networks():
     builder = InlineKeyboardBuilder()
@@ -84,28 +133,22 @@ def crypto_networks():
     builder.adjust(2)
     return builder.as_markup()
 
+
 def back_to_buy():
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="« Назад к выбору количества", callback_data="back_to_buy"))
     return builder.as_markup()
 
+
 def support_keyboard():
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="📝 Создать обращение", callback_data="create_ticket"))
-    builder.add(InlineKeyboardButton(text="📞 Связаться с менеджером", url="https://t.me/VenmoSell_Manager"))
+    builder.add(InlineKeyboardButton(text="📞 Связаться с менеджером", url="https://t.me/BrudeSell_Manager"))
     builder.add(InlineKeyboardButton(text="📝 Оставить отзыв", callback_data="leave_review"))
     builder.add(InlineKeyboardButton(text="« Вернуться назад", callback_data="back_to_main"))
     builder.adjust(1)
     return builder.as_markup()
 
-def referral_keyboard(user_id):
-    builder = InlineKeyboardBuilder()
-    referral_link = f"https://t.me/Venmo_Seller_Bot?start=ref{user_id}"
-    builder.add(InlineKeyboardButton(text="📋 Скопировать ссылку", callback_data=f"copy_link:{referral_link}"))
-    builder.add(InlineKeyboardButton(text="📊 Статистика", callback_data="referral_stats"))
-    builder.add(InlineKeyboardButton(text="« Назад", callback_data="back_to_main"))
-    builder.adjust(1)
-    return builder.as_markup()
 
 def admin_menu():
     builder = InlineKeyboardBuilder()

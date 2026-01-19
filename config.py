@@ -60,36 +60,36 @@ WALLETS = {
 
 # Цены за единицу товара в зависимости от количества
 PRICES = {
-    "1-20": float(os.getenv("PRICE_1_20", "105")),
-    "20-50": float(os.getenv("PRICE_20_50", "95")),
-    "50-100": float(os.getenv("PRICE_50_100", "85"))
+    "1-20": float(os.getenv("PRICE_1_20", "10")),
+    "20-50": float(os.getenv("PRICE_20_50", "9")),
+    "50-100": float(os.getenv("PRICE_50_100", "8"))
 }
 
 # Готовые пакеты товаров
 PACKAGES = {
     "Lite": {
         "quantity": int(os.getenv("PACK_LITE_QTY", "1")),
-        "price": float(os.getenv("PACK_LITE_PRICE", "105"))
+        "price": float(os.getenv("PACK_LITE_PRICE", "10"))
     },
     "Starter": {
         "quantity": int(os.getenv("PACK_STARTER_QTY", "3")),
-        "price": float(os.getenv("PACK_STARTER_PRICE", "315"))
+        "price": float(os.getenv("PACK_STARTER_PRICE", "30"))
     },
     "Smart": {
         "quantity": int(os.getenv("PACK_SMART_QTY", "5")),
-        "price": float(os.getenv("PACK_SMART_PRICE", "525"))
+        "price": float(os.getenv("PACK_SMART_PRICE", "50"))
     },
     "Pro": {
         "quantity": int(os.getenv("PACK_PRO_QTY", "10")),
-        "price": float(os.getenv("PACK_PRO_PRICE", "1050"))
+        "price": float(os.getenv("PACK_PRO_PRICE", "100"))
     },
     "Premium": {
         "quantity": int(os.getenv("PACK_PREMIUM_QTY", "20")),
-        "price": float(os.getenv("PACK_PREMIUM_PRICE", "2100"))
+        "price": float(os.getenv("PACK_PREMIUM_PRICE", "1800"))
     },
     "Ultimate": {
         "quantity": int(os.getenv("PACK_ULTIMATE_QTY", "30")),
-        "price": float(os.getenv("PACK_ULTIMATE_PRICE", "3150"))
+        "price": float(os.getenv("PACK_ULTIMATE_PRICE", "2700"))
     }
 }
 

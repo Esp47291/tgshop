@@ -54,12 +54,20 @@ async def buy_accounts(message: Message):
 @router.callback_query(F.data.startswith("pack_"))
 async def choose_package(callback: CallbackQuery, state: FSMContext):
     package_type = callback.data.split("_")[1]
-    package = config.PACKAGES[package_type.capitalize()]
+    # Получаем правильное название пакета с заглавной буквы
+    package_key = package_type.capitalize()
+
+    # Проверяем, что пакет существует
+    if package_key not in config.PACKAGES:
+        await callback.answer("❌ Пакет не найден", show_alert=True)
+        return
+
+    package = config.PACKAGES[package_key]
 
     await state.update_data(
         quantity=package["quantity"],
-        price=package["price"],
-        package_type=package_type
+        price=float(package["price"]),
+        package_type=package_key.lower()
     )
 
     confirm_text = f"""
@@ -67,7 +75,7 @@ async def choose_package(callback: CallbackQuery, state: FSMContext):
 
     Товар: Venmo Accounts
     Количество: {package['quantity']} шт
-    Сумма: {package['price']}$
+    Сумма: ${package['price']:.2f}
 
     Все верно? Выберите способ оплаты:
     """
@@ -77,6 +85,7 @@ async def choose_package(callback: CallbackQuery, state: FSMContext):
         reply_markup=kb.payment_methods(),
         parse_mode="Markdown"
     )
+    await callback.answer()
 
 
 @router.callback_query(F.data == "custom_quantity")
@@ -95,12 +104,12 @@ async def process_quantity(message: Message, state: FSMContext):
         if quantity < 1:
             raise ValueError
 
-        # Расчет цены
+        # Расчет цены с исправленными границами
         if 1 <= quantity <= 20:
             price_per = config.PRICES["1-20"]
-        elif 20 <= quantity <= 50:
+        elif 21 <= quantity <= 50:  # Исправлено с 20 на 21
             price_per = config.PRICES["20-50"]
-        elif quantity > 50:
+        elif quantity >= 51:  # Исправлено с > 50 на >= 51
             price_per = config.PRICES["50-100"]
         else:
             price_per = config.PRICES["1-20"]
@@ -118,18 +127,19 @@ async def process_quantity(message: Message, state: FSMContext):
 
         Товар: Venmo Accounts
         Количество: {quantity} шт
-        Цена за шт: {price_per}$
-        Сумма: {total_price}$
+        Цена за шт: ${price_per:.2f}
+        Сумма: ${total_price:.2f}
 
         Все верно? Выберите способ оплаты:
         """
 
         await message.answer(
             confirm_text,
-            reply_markup=kb.payment_methods(),
+            reply_markup=kb.payment_methods(),  # Убедитесь, что здесь есть кнопка "назад"
             parse_mode="Markdown"
         )
-        await state.clear()
+        # НЕ очищаем состояние здесь - это важно для кнопки "назад"
+        # await state.clear()  # УДАЛИТЬ ЭТУ СТРОКУ!
 
     except ValueError:
         await message.answer("❌ Пожалуйста, введите корректное число!")
@@ -137,7 +147,7 @@ async def process_quantity(message: Message, state: FSMContext):
 
 @router.callback_query(F.data == "back_to_buy")
 async def back_to_buy_menu(callback: CallbackQuery, state: FSMContext):
-    await state.clear()
+    await state.clear()  # Очищаем состояние при возврате в меню
     buy_text = """
     Шаг 1 из 3... Выбор количества для покупки
 
@@ -164,24 +174,59 @@ async def back_to_buy_menu(callback: CallbackQuery, state: FSMContext):
         reply_markup=kb.buy_menu(),
         parse_mode="Markdown"
     )
+    await callback.answer()
 
 
 @router.callback_query(F.data == "back_to_payment")
 async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    
-    payment_text = f"""
-    🛒 *Подтверждение заказа*
 
-    Товар: Venmo Accounts
-    Количество: {data.get('quantity', 1)} шт
-    Сумма: {data.get('price', 105)}$
+    # Проверяем, есть ли данные в состоянии
+    if not data:
+        await callback.answer("❌ Данные заказа не найдены. Начните заново.", show_alert=True)
+        # Возвращаем в меню покупки
+        await back_to_buy_menu(callback, state)
+        return
 
-    Все верно? Выберите способ оплаты:
-    """
+    # Форматируем цену
+    quantity = data.get('quantity', 1)
+    price = float(data.get('price', 10))
+
+    # Для кастомного заказа показываем цену за штуку
+    if data.get('package_type') == 'custom':
+        # Рассчитываем цену за штуку
+        if 1 <= quantity <= 20:
+            price_per = config.PRICES["1-20"]
+        elif 21 <= quantity <= 50:
+            price_per = config.PRICES["20-50"]
+        elif quantity >= 51:
+            price_per = config.PRICES["50-100"]
+
+        payment_text = f"""
+        🛒 *Подтверждение заказа*
+
+        Товар: Venmo Accounts
+        Количество: {quantity} шт
+        Цена за шт: ${price_per:.2f}
+        Сумма: ${price:.2f}
+
+        Все верно? Выберите способ оплаты:
+        """
+    else:
+        # Для готовых пакетов
+        payment_text = f"""
+        🛒 *Подтверждение заказа*
+
+        Товар: Venmo Accounts
+        Количество: {quantity} шт
+        Сумма: ${price:.2f}
+
+        Все верно? Выберите способ оплаты:
+        """
 
     await callback.message.edit_text(
         payment_text,
-        reply_markup=kb.payment_methods(),
+        reply_markup=kb.payment_methods(),  # Убедитесь, что клавиатура содержит кнопку "назад"
         parse_mode="Markdown"
     )
+    await callback.answer()
