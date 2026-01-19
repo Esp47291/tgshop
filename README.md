@@ -60,6 +60,49 @@ python main.py
 ## ⚙️ Конфигурация
 
 Все настройки находятся в файле `.env`. Основные параметры:
+#### ОБЯЗАТЕЛЬНЫЕ НАСТРОЙКИ
+BOT_TOKEN=8513744371:AAES-lLCYCuHuQKUjCtdpIRcAiHuWkTTJpg
+ADMIN_IDS=5324231382
+
+# ОПЦИОНАЛЬНЫЕ НАСТРОЙКИ
+CRYPTOBOT_TOKEN=
+SUPPORT_MANAGER_ID=@VenmoSell_Manager
+CHANNEL_ID=@reviews_channel
+
+# КРИПТОКОШЕЛЬКИ
+USDT_TRC20=
+USDT_BEP20=
+TON=
+USDT_TON=
+ETH=
+
+# ЦЕНЫ
+PRICE_1_20=105
+PRICE_20_50=95
+PRICE_50_100=85
+
+# ПАКЕТЫ
+PACK_LITE_QTY=1
+PACK_LITE_PRICE=105
+PACK_STARTER_QTY=3
+PACK_STARTER_PRICE=315
+PACK_SMART_QTY=5
+PACK_SMART_PRICE=525
+PACK_PRO_QTY=10
+PACK_PRO_PRICE=1050
+PACK_PREMIUM_QTY=20
+PACK_PREMIUM_PRICE=2100
+PACK_ULTIMATE_QTY=30
+PACK_ULTIMATE_PRICE=3150
+
+# ПРОЧИЕ
+REFERRAL_PERCENT=15
+PRODUCT_NAME=Venmo Accounts
+DATABASE_URL=sqlite:///data/bot_database.db
+LOG_LEVEL=INFO
+LOG_FILE=data/bot.log
+"@ | Out-File -FilePath .env -Encoding utf8 } }
+
 
 ### Обязательные:
 - `BOT_TOKEN` - токен Telegram бота
