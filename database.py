@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Boolean, Text, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Boolean, Text, ForeignKey, Index
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -9,6 +9,9 @@ Base = declarative_base()
 
 class User(Base):
     __tablename__ = 'users'
+    __table_args__ = (
+        Index('idx_user_telegram_id', 'telegram_id'),
+    )
 
     id = Column(Integer, primary_key=True)
     telegram_id = Column(Integer, unique=True, nullable=False)
@@ -27,6 +30,11 @@ class User(Base):
 
 class Order(Base):
     __tablename__ = 'orders'
+    __table_args__ = (
+        Index('idx_order_order_id', 'order_id'),
+        Index('idx_order_user_id', 'user_id'),
+        Index('idx_order_status', 'status'),
+    )
 
     id = Column(Integer, primary_key=True)
     order_id = Column(String(50), unique=True, nullable=False)
@@ -46,6 +54,10 @@ class Order(Base):
 
 class Payment(Base):
     __tablename__ = 'payments'
+    __table_args__ = (
+        Index('idx_payment_order_id', 'order_id'),
+        Index('idx_payment_status', 'status'),
+    )
 
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
@@ -64,6 +76,10 @@ class Payment(Base):
 
 class SupportTicket(Base):
     __tablename__ = 'tickets'
+    __table_args__ = (
+        Index('idx_ticket_user_id', 'user_id'),
+        Index('idx_ticket_status', 'status'),
+    )
 
     id = Column(Integer, primary_key=True)
     ticket_number = Column(String(20), unique=True, nullable=False)
@@ -80,6 +96,9 @@ class SupportTicket(Base):
 
 class Referral(Base):
     __tablename__ = 'referrals'
+    __table_args__ = (
+        Index('idx_referral_referrer_id', 'referrer_id'),
+    )
 
     id = Column(Integer, primary_key=True)
     referrer_id = Column(Integer, ForeignKey('users.id'), nullable=False)
@@ -89,7 +108,6 @@ class Referral(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
-# Создание базы данных
 engine = create_engine(config.DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 

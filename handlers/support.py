@@ -48,7 +48,7 @@ async def process_subject(message: Message, state: FSMContext):
     if len(subject) < 5:
         await message.answer("❌ Тема слишком короткая. Пожалуйста, укажите более подробную тему.")
         return
-    
+
     await state.update_data(subject=subject)
     await message.answer(
         "📝 Теперь опишите вашу проблему или вопрос подробно:\n\n"
@@ -67,17 +67,16 @@ async def process_ticket_message(message: Message, state: FSMContext, bot: Bot):
     data = await state.get_data()
     subject = data.get("subject", "Без темы")
     ticket_message = message.text or (message.caption if message.caption else "Сообщение без текста")
-    
+
     with SessionLocal() as session:
         user = session.query(User).filter(User.telegram_id == message.from_user.id).first()
         if not user:
             await message.answer("❌ Ошибка: пользователь не найден. Используйте /start")
             await state.clear()
             return
-        
-        # Генерация номера тикета
+
         ticket_number = f"TKT{random.randint(100000, 999999)}"
-        
+
         ticket = SupportTicket(
             ticket_number=ticket_number,
             user_id=user.id,
@@ -88,8 +87,7 @@ async def process_ticket_message(message: Message, state: FSMContext, bot: Bot):
         )
         session.add(ticket)
         session.commit()
-        
-        # Подтверждение пользователю
+
         confirmation_text = f"""
 ✅ *Обращение создано!*
 
@@ -101,14 +99,13 @@ async def process_ticket_message(message: Message, state: FSMContext, bot: Bot):
 
 Менеджер поддержки: @{config.SUPPORT_MANAGER_ID.replace('@', '')}
 """
-        
+
         await message.answer(
             confirmation_text,
             parse_mode="Markdown",
             reply_markup=kb.back_button()
         )
-        
-        # Уведомление менеджера
+
         manager_notification = f"""
 🆕 *Новое обращение в поддержку*
 
@@ -121,16 +118,13 @@ async def process_ticket_message(message: Message, state: FSMContext, bot: Bot):
 
 Ответить: /admin
 """
-        
-        # Отправка менеджеру
+
         try:
             manager_id = config.SUPPORT_MANAGER_ID
             if manager_id.startswith("@"):
-                # Если это username, отправляем в канал или группу
-                # В реальном проекте здесь должна быть логика отправки
+                # Если username, можно отправить в личку или канал – здесь пример отправки в личку, если ID
                 pass
             else:
-                # Если это ID пользователя
                 try:
                     manager_id_int = int(manager_id)
                     await bot.send_message(manager_id_int, manager_notification, parse_mode="Markdown")
@@ -138,8 +132,7 @@ async def process_ticket_message(message: Message, state: FSMContext, bot: Bot):
                     pass
         except Exception as e:
             logger.error(f"Error sending notification to manager: {e}")
-        
-        # Отправка админам
+
         for admin_id in config.ADMIN_IDS:
             try:
                 if message.photo:
@@ -153,14 +146,14 @@ async def process_ticket_message(message: Message, state: FSMContext, bot: Bot):
                     await bot.send_message(admin_id, manager_notification, parse_mode="Markdown")
             except Exception as e:
                 logger.error(f"Error sending notification to admin {admin_id}: {e}")
-        
+
         await state.clear()
 
 
-@router.message(F.text.contains("поддержк") | F.text.contains("помощь") | F.text.contains("support"))
+@router.message(F.text)
 async def support_keyword_handler(message: Message):
-    """Обработчик ключевых слов для быстрого доступа к поддержке"""
-    if message.text.lower() in ["поддержка", "помощь", "support", "help"]:
+    keywords = ('поддержка', 'помощь', 'support', 'help')
+    if any(keyword in message.text.lower() for keyword in keywords):
         support_text = """
 🛠 *Техническая поддержка*
 
@@ -182,11 +175,12 @@ async def support_keyword_handler(message: Message):
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="📝 Создать обращение", callback_data="create_ticket")],
-            [InlineKeyboardButton(text="📞 Связаться с менеджером", url=f"https://t.me/{config.SUPPORT_MANAGER_ID.replace('@', '')}")],
+            [InlineKeyboardButton(text="📞 Связаться с менеджером",
+                                  url=f"https://t.me/{config.SUPPORT_MANAGER_ID.replace('@', '')}")],
             [InlineKeyboardButton(text="📝 Оставить отзыв", callback_data="leave_review")],
             [InlineKeyboardButton(text="« Вернуться назад", callback_data="back_to_main")]
         ])
-        
+
         await message.answer(
             support_text,
             reply_markup=keyboard,

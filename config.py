@@ -1,20 +1,13 @@
-"""
-Конфигурационный файл бота
-Все настройки можно изменить через переменные окружения (.env файл)
-"""
 import os
 from dotenv import load_dotenv
 
-# Загрузка переменных окружения с перезаписью существующих значений
-# override=True гарантирует, что значения из .env всегда будут использоваться
-# Это важно для обновления токена без перезапуска интерпретатора
 load_dotenv(override=True)
 
-# Токены и API ключи
-# Чтение напрямую из .env файла для гарантии актуальности
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 
-# Проверка токена
+print(f"BOT_TOKEN (первые 10 символов): {BOT_TOKEN[:10]}...")
+print(f"Длина токена: {len(BOT_TOKEN)}")
+
 if not BOT_TOKEN or BOT_TOKEN in ["YOUR_BOT_TOKEN_HERE", "", "your_bot_token_here"]:
     print("\n" + "="*60)
     print("❌ ОШИБКА: BOT_TOKEN не установлен!")
@@ -28,9 +21,8 @@ if not BOT_TOKEN or BOT_TOKEN in ["YOUR_BOT_TOKEN_HERE", "", "your_bot_token_her
     print("\n" + "="*60 + "\n")
     raise ValueError("BOT_TOKEN не установлен! Откройте файл .env и укажите ваш токен от @BotFather")
 
-CRYPTOBOT_TOKEN = os.getenv("CRYPTOBOT_TOKEN", "")  # Опционально, если не используется CryptoBot
+CRYPTOBOT_TOKEN = os.getenv("CRYPTOBOT_TOKEN", "")
 
-# Администраторы (через запятую)
 ADMIN_IDS_STR = os.getenv("ADMIN_IDS", "").strip()
 if ADMIN_IDS_STR and ADMIN_IDS_STR not in ["YOUR_ADMIN_ID_HERE", "your_admin_id_here"]:
     try:
@@ -43,13 +35,9 @@ else:
     print("⚠️ ВНИМАНИЕ: ADMIN_IDS не установлен! Админ-панель будет недоступна")
     print("   Чтобы исправить: откройте .env и замените YOUR_ADMIN_ID_HERE на ваш ID от @userinfobot")
 
-# ID менеджера поддержки (может быть username с @ или числовой ID)
 SUPPORT_MANAGER_ID = os.getenv("SUPPORT_MANAGER_ID", "@VenmoSell_Manager")
-
-# ID канала с отзывами
 CHANNEL_ID = os.getenv("CHANNEL_ID", "@reviews_channel")
 
-# Криптокошельки для приема платежей
 WALLETS = {
     "USDT_TRC20": os.getenv("USDT_TRC20", ""),
     "USDT_BEP20": os.getenv("USDT_BEP20", ""),
@@ -58,14 +46,12 @@ WALLETS = {
     "ETH": os.getenv("ETH", "")
 }
 
-# Цены за единицу товара в зависимости от количества
 PRICES = {
     "1-20": float(os.getenv("PRICE_1_20", "105")),
     "20-50": float(os.getenv("PRICE_20_50", "95")),
     "50-100": float(os.getenv("PRICE_50_100", "85"))
 }
 
-# Готовые пакеты товаров
 PACKAGES = {
     "Lite": {
         "quantity": int(os.getenv("PACK_LITE_QTY", "1")),
@@ -93,15 +79,11 @@ PACKAGES = {
     }
 }
 
-# Настройки базы данных
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///data/bot_database.db")
-
-# Процент реферальной системы (от суммы покупки реферала)
 REFERRAL_PERCENT = float(os.getenv("REFERRAL_PERCENT", "15"))
-
-# Название товара (можно изменить)
 PRODUCT_NAME = os.getenv("PRODUCT_NAME", "Venmo Accounts")
-
-# Настройки логирования
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 LOG_FILE = os.getenv("LOG_FILE", "data/bot.log")
+
+# Добавляем переменную для username бота (будет заполнена при запуске)
+BOT_USERNAME = None

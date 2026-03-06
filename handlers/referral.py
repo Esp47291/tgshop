@@ -18,7 +18,6 @@ async def referral_system(message: Message):
             await message.answer("Сначала запустите бота командой /start")
             return
 
-        # Подсчет рефералов
         referrals_count = session.query(User).filter(User.referrer_id == user.id).count()
 
         referral_text = f"""
@@ -30,7 +29,7 @@ async def referral_system(message: Message):
         *Зарабатывай с нашей реферальной программой!*
 
         Ваша персональная ссылка:
-        https://t.me/Venmo_Seller_Bot?start=ref{user.id}
+        https://t.me/{config.BOT_USERNAME}?start=ref{user.id}
 
         ---
         *Как это работает?*
@@ -78,7 +77,9 @@ async def earn_money(message: Message):
 
 @router.callback_query(F.data.startswith("copy_link:"))
 async def copy_referral_link(callback: CallbackQuery):
-    link = callback.data.split(":")[1]
+    user_id = int(callback.data.split(":")[1])
+    # Формируем ссылку с username бота (он должен быть получен при старте)
+    link = f"https://t.me/{config.BOT_USERNAME}?start=ref{user_id}"
     await callback.answer(
         f"Ссылка скопирована: {link}",
         show_alert=True

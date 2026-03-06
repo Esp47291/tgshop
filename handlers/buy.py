@@ -95,7 +95,6 @@ async def process_quantity(message: Message, state: FSMContext):
         if quantity < 1:
             raise ValueError
 
-        # Расчет цены
         if 1 <= quantity <= 20:
             price_per = config.PRICES["1-20"]
         elif 20 <= quantity <= 50:
@@ -129,7 +128,8 @@ async def process_quantity(message: Message, state: FSMContext):
             reply_markup=kb.payment_methods(),
             parse_mode="Markdown"
         )
-        await state.clear()
+        # НЕ очищаем state, так как данные ещё нужны для оплаты
+        # await state.clear()  # УДАЛЕНО
 
     except ValueError:
         await message.answer("❌ Пожалуйста, введите корректное число!")
@@ -169,7 +169,7 @@ async def back_to_buy_menu(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "back_to_payment")
 async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    
+
     payment_text = f"""
     🛒 *Подтверждение заказа*
 

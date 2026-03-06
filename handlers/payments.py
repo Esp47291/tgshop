@@ -1,14 +1,15 @@
+import os
+from datetime import datetime
+import random
+import logging
+
 from aiogram import Router, F, Bot
-from aiogram.types import Message, CallbackQuery, PreCheckoutQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 import keyboards as kb
 import config
 from database import SessionLocal, Order, Payment, User, Referral
-from datetime import datetime
-import random
-import aiohttp
-import logging
 from utils.payment_utils import get_cryptobot_api, CryptoPaymentChecker
 
 router = Router()
@@ -26,7 +27,6 @@ class PaymentStates(StatesGroup):
 async def cryptobot_payment(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
 
-    # Создание заказа в базе
     with SessionLocal() as session:
         user = session.query(User).filter(User.telegram_id == callback.from_user.id).first()
         if not user:
@@ -48,25 +48,23 @@ async def cryptobot_payment(callback: CallbackQuery, state: FSMContext):
 
         await state.update_data(order_id=order.id, order_db_id=order.id)
 
-        # Интеграция с CryptoBot API
         cryptobot = get_cryptobot_api()
         invoice = None
-        
+
         if cryptobot:
             invoice = await cryptobot.create_invoice(
                 amount=data.get("price", 105),
                 description=f"Заказ {order.order_id} - Venmo Accounts x{data.get('quantity', 1)}",
                 payload=str(order.id)
             )
-        
+
         if invoice:
             invoice_url = invoice.get("pay_url", "")
             invoice_id = invoice.get("invoice_id")
-            
-            # Сохранение invoice_id в заказе
+
             order.transaction_id = str(invoice_id)
             session.commit()
-            
+
             payment_text = f"""
 💳 *Оплата через CryptoBot*
 
@@ -79,20 +77,19 @@ ID заказа: `{order.order_id}`
 
 Нажмите кнопку ниже для оплаты:
 """
-            
+
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text="💳 Оплатить счет", url=invoice_url)],
                 [InlineKeyboardButton(text="✅ Проверить оплату", callback_data=f"check_cryptobot:{invoice_id}")],
                 [InlineKeyboardButton(text="« Назад", callback_data="back_to_payment")]
             ])
-            
+
             await callback.message.edit_text(
                 payment_text,
-                reply_markup=keyboard,
+                reply_mup=keyboard,
                 parse_mode="Markdown"
             )
         else:
-            # Fallback если CryptoBot недоступен
             payment_text = f"""
 💳 *Оплата через CryptoBot*
 
@@ -177,7 +174,6 @@ async def choose_network(callback: CallbackQuery, state: FSMContext):
         await callback.answer("Ошибка: адрес кошелька не настроен", show_alert=True)
         return
 
-    # Создание записи о платеже
     with SessionLocal() as session:
         order = session.query(Order).filter(Order.id == data.get("order_db_id")).first()
         if order:
@@ -200,23 +196,20 @@ async def choose_network(callback: CallbackQuery, state: FSMContext):
 *Инструкция по оплате:*
 
 1️⃣ Отправьте *{data.get('price', 105)}$* на адрес:
-```
-{wallet_address}
-```
 
-2️⃣ После отправки:
-   • Отправьте скриншот транзакции (фото)
-   • ИЛИ отправьте хэш транзакции (текст)
+    2️⃣ После отправки:
+       • Отправьте скриншот транзакции (фото)
+       • ИЛИ отправьте хэш транзакции (текст)
 
-3️⃣ Платеж будет проверен в течение 5-15 минут
+    3️⃣ Платеж будет проверен в течение 5-15 минут
 
-*Внимание:* 
-• Отправляйте точную сумму!
-• Проверьте адрес перед отправкой
-• Сохраните хэш транзакции
+    *Внимание:* 
+    • Отправляйте точную сумму!
+    • Проверьте адрес перед отправкой
+    • Сохраните хэш транзакции
 
-ID заказа: `{data.get('order_id', 'N/A')}`
-"""
+    ID заказа: `{data.get('order_id', 'N/A')}`
+    """
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="📋 Скопировать адрес", callback_data=f"copy_wallet:{wallet_address}")],
@@ -236,42 +229,45 @@ ID заказа: `{data.get('order_id', 'N/A')}`
 @router.message(PaymentStates.waiting_screenshot)
 async def receive_payment_proof(message: Message, state: FSMContext, bot: Bot):
     data = await state.get_data()
-    
+
     with SessionLocal() as session:
         order = session.query(Order).filter(Order.id == data.get("order_db_id")).first()
         if not order:
             await message.answer("❌ Ошибка: заказ не найден")
             await state.clear()
             return
-        
+
         payment = session.query(Payment).filter(Payment.id == data.get("payment_id")).first()
         if not payment:
             await message.answer("❌ Ошибка: платеж не найден")
             await state.clear()
             return
-        
-        # Обработка фото или текста (хэш транзакции)
+
         if message.photo:
-            # Сохранение информации о фото
             photo_file_id = message.photo[-1].file_id
-            payment.screenshot_path = f"data/screenshots/{photo_file_id}.jpg"
-            
-            # Скачивание фото для админа
+            # Генерируем уникальное имя файла
+            timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+            filename = f"order_{order.order_id}_{timestamp}.jpg"
+            file_path = f"data/screenshots/{filename}"
             try:
                 photo_file = await bot.get_file(photo_file_id)
-                await photo_file.download(f"data/screenshots/{photo_file_id}.jpg")
+                await photo_file.download(file_path)
+                payment.screenshot_path = file_path
+                logger.info(f"Screenshot saved: {file_path}")
             except Exception as e:
-                logger.error(f"Error downloading photo: {e}")
-        
+                logger.error(f"Error downloading screenshot: {e}")
+                # Уведомляем пользователя, но не прерываем процесс
+                await message.answer(
+                    "⚠️ Не удалось сохранить скриншот, но ваш платеж принят. Администратор проверит вручную.")
+
         elif message.text:
-            # Текст может быть хэшем транзакции
             payment.transaction_hash = message.text.strip()
-        
+
         payment.status = "pending"
         session.commit()
-        
+
         user = session.query(User).filter(User.id == order.user_id).first()
-        
+
         await message.answer(
             "✅ Доказательство оплаты получено!\n\n"
             "Платеж проверяется администратором.\n"
@@ -280,24 +276,23 @@ async def receive_payment_proof(message: Message, state: FSMContext, bot: Bot):
             reply_markup=kb.back_button(),
             parse_mode="Markdown"
         )
-        
+
         # Уведомление админа
         admin_notification = f"""
-🆕 *Новый платеж требует проверки!*
+    🆕 *Новый платеж требует проверки!*
 
-👤 Пользователь: @{message.from_user.username or 'без username'} ({message.from_user.id})
-📦 Заказ: `{order.order_id}`
-💰 Сумма: {order.amount}$
-🌐 Сеть: {payment.crypto_network or 'N/A'}
-📍 Кошелек: `{payment.wallet_address[:20]}...`
-"""
-        
+    👤 Пользователь: @{message.from_user.username or 'без username'} ({message.from_user.id})
+    📦 Заказ: `{order.order_id}`
+    💰 Сумма: {order.amount}$
+    🌐 Сеть: {payment.crypto_network or 'N/A'}
+    📍 Кошелек: `{payment.wallet_address[:20]}...`
+    """
+
         if payment.transaction_hash:
             admin_notification += f"\n🔗 Хэш: `{payment.transaction_hash}`"
-        
+
         admin_notification += f"\n\nПроверить: /admin"
-        
-        # Отправка админам с фото если есть
+
         for admin_id in config.ADMIN_IDS:
             try:
                 if message.photo:
@@ -311,7 +306,7 @@ async def receive_payment_proof(message: Message, state: FSMContext, bot: Bot):
                     await bot.send_message(admin_id, admin_notification, parse_mode="Markdown")
             except Exception as e:
                 logger.error(f"Error sending notification to admin {admin_id}: {e}")
-        
+
         await state.clear()
 
 
@@ -319,23 +314,21 @@ async def receive_payment_proof(message: Message, state: FSMContext, bot: Bot):
 async def check_cryptobot_payment(callback: CallbackQuery, state: FSMContext):
     invoice_id = int(callback.data.split(":")[1])
     data = await state.get_data()
-    
+
     cryptobot = get_cryptobot_api()
     if not cryptobot:
         await callback.answer("CryptoBot API недоступен", show_alert=True)
         return
-    
+
     invoice = await cryptobot.get_invoice_status(invoice_id)
-    
+
     if invoice and invoice.get("status") == "paid":
-        # Платеж подтвержден
         with SessionLocal() as session:
             order = session.query(Order).filter(Order.id == data.get("order_db_id")).first()
             if order and order.status == "pending":
                 order.status = "paid"
                 session.commit()
-                
-                # Создание записи о платеже
+
                 payment = Payment(
                     order_id=order.id,
                     amount=order.amount,
@@ -346,10 +339,9 @@ async def check_cryptobot_payment(callback: CallbackQuery, state: FSMContext):
                 )
                 session.add(payment)
                 session.commit()
-                
-                # Автоматическая выдача товара
+
                 await deliver_product(callback.bot, order, session)
-        
+
         await callback.answer("✅ Платеж подтвержден! Товар выдан.", show_alert=True)
         await callback.message.edit_text(
             "✅ *Платеж подтвержден!*\n\nТовар отправлен вам в личные сообщения.",
@@ -368,16 +360,16 @@ async def copy_wallet_address(callback: CallbackQuery):
 @router.callback_query(F.data == "back_to_payment")
 async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    
+
     payment_text = f"""
-🛒 *Подтверждение заказа*
+    🛒 *Подтверждение заказа*
 
-Товар: Venmo Accounts
-Количество: {data.get('quantity', 1)} шт
-Сумма: {data.get('price', 105)}$
+    Товар: Venmo Accounts
+    Количество: {data.get('quantity', 1)} шт
+    Сумма: {data.get('price', 105)}$
 
-Все верно? Выберите способ оплаты:
-"""
+    Все верно? Выберите способ оплаты:
+    """
 
     await callback.message.edit_text(
         payment_text,
@@ -387,63 +379,56 @@ async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
 
 
 async def deliver_product(bot: Bot, order: Order, session):
-    """Автоматическая выдача товара после подтверждения платежа"""
     try:
         user = session.query(User).filter(User.id == order.user_id).first()
         if not user:
             return
-        
-        # Генерация "товара" (в реальном проекте здесь должна быть выдача реальных аккаунтов)
+
         product_data = []
         for i in range(order.quantity):
-            # Пример генерации данных аккаунта
             account_data = {
-                "email": f"venmo{order.id}_{i+1}@example.com",
-                "password": f"Pass{order.id}_{i+1}!",
-                "username": f"venmo_user_{order.id}_{i+1}"
+                "email": f"venmo{order.id}_{i + 1}@example.com",
+                "password": f"Pass{order.id}_{i + 1}!",
+                "username": f"venmo_user_{order.id}_{i + 1}"
             }
             product_data.append(account_data)
-        
-        # Отправка товара пользователю
+
         delivery_text = f"""
-✅ *Ваш заказ выполнен!*
+    ✅ *Ваш заказ выполнен!*
 
-ID заказа: `{order.order_id}`
-Товар: Venmo Accounts
-Количество: {order.quantity} шт
+    ID заказа: `{order.order_id}`
+    Товар: Venmo Accounts
+    Количество: {order.quantity} шт
 
-*Данные аккаунтов:*
-"""
-        
+    *Данные аккаунтов:*
+    """
+
         for idx, account in enumerate(product_data, 1):
             delivery_text += f"""
-*Аккаунт {idx}:*
-Email: `{account['email']}`
-Password: `{account['password']}`
-Username: `{account['username']}`
-"""
-        
+    *Аккаунт {idx}:*
+    Email: `{account['email']}`
+    Password: `{account['password']}`
+    Username: `{account['username']}`
+    """
+
         delivery_text += "\n⚠️ Сохраните эти данные в безопасном месте!"
-        
+
         await bot.send_message(
             user.telegram_id,
             delivery_text,
             parse_mode="Markdown"
         )
-        
-        # Обновление статуса заказа
+
         order.status = "completed"
         order.completed_at = datetime.utcnow()
         user.total_spent += order.amount
-        
-        # Начисление реферального бонуса
+
         if user.referrer_id:
             referrer = session.query(User).filter(User.id == user.referrer_id).first()
             if referrer:
                 referral_bonus = order.amount * (config.REFERRAL_PERCENT / 100)
                 referrer.balance += referral_bonus
-                
-                # Запись в таблицу рефералов
+
                 referral = Referral(
                     referrer_id=referrer.id,
                     referred_id=user.id,
@@ -451,10 +436,10 @@ Username: `{account['username']}`
                     status="active"
                 )
                 session.add(referral)
-        
+
         session.commit()
-        
+
         logger.info(f"Product delivered for order {order.order_id}")
-        
+
     except Exception as e:
         logger.error(f"Error delivering product: {e}")

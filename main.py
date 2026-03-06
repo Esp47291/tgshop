@@ -1,5 +1,7 @@
 import asyncio
 import logging
+import os
+import signal
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
@@ -19,6 +21,16 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Создаём необходимые папки
+os.makedirs("data", exist_ok=True)
+os.makedirs("data/screenshots", exist_ok=True)
+
+
+async def shutdown(bot: Bot):
+    logger.info("Shutting down bot...")
+    # Здесь можно закрыть соединения, если есть
+    await bot.session.close()
+
 
 async def main():
     # Инициализация базы данных
@@ -33,7 +45,12 @@ async def main():
         token=config.BOT_TOKEN,
         default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN)
     )
-    
+
+    # Получаем информацию о боте для username
+    bot_info = await bot.get_me()
+    config.BOT_USERNAME = bot_info.username
+    logger.info(f"Bot username: @{config.BOT_USERNAME}")
+
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
 
@@ -47,8 +64,16 @@ async def main():
 
     logger.info("Бот запущен!")
 
+    # Обработка сигналов для graceful shutdown
+    loop = asyncio.get_event_loop()
+    for sig in (signal.SIGTERM, signal.SIGINT):
+        loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(bot)))
+
     # Запуск поллинга
-    await dp.start_polling(bot)
+    try:
+        await dp.start_polling(bot)
+    finally:
+        await shutdown(bot)
 
 
 if __name__ == "__main__":

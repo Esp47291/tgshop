@@ -1,30 +1,24 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+import config
 
 def main_menu():
-    """Главное меню - работает на всех платформах (мобильная и веб-версия)"""
     builder = ReplyKeyboardBuilder()
-    # Первая кнопка на всю ширину
     builder.add(KeyboardButton(text="Купить аккаунты 🛒"))
-    # Вторая и третья кнопки рядом
     builder.add(KeyboardButton(text="Поддержка 🌐"))
     builder.add(KeyboardButton(text="FAQ ❓"))
-    # Остальные по одной
     builder.add(KeyboardButton(text="Удачные сделки ✅"))
     builder.add(KeyboardButton(text="Реферальная система 👤"))
     builder.add(KeyboardButton(text="Заработать 💰"))
-    # Настройка расположения: первая кнопка на всю ширину, затем 2 рядом, затем по одной
     builder.adjust(1, 2, 1, 1, 1)
-    # Явно указываем параметры для совместимости с веб-версией
     return builder.as_markup(
-        resize_keyboard=True, 
+        resize_keyboard=True,
         one_time_keyboard=False,
         input_field_placeholder="Выберите действие из меню"
     )
 
 
 def main_menu_inline():
-    """Альтернативное inline меню для веб-версии"""
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="🛒 Купить аккаунты", callback_data="menu_buy"))
     builder.add(InlineKeyboardButton(text="🌐 Поддержка", callback_data="menu_support"))
@@ -100,8 +94,8 @@ def support_keyboard():
 
 def referral_keyboard(user_id):
     builder = InlineKeyboardBuilder()
-    referral_link = f"https://t.me/Venmo_Seller_Bot?start=ref{user_id}"
-    builder.add(InlineKeyboardButton(text="📋 Скопировать ссылку", callback_data=f"copy_link:{referral_link}"))
+    # Передаём только user_id, ссылка будет сформирована в обработчике
+    builder.add(InlineKeyboardButton(text="📋 Скопировать ссылку", callback_data=f"copy_link:{user_id}"))
     builder.add(InlineKeyboardButton(text="📊 Статистика", callback_data="referral_stats"))
     builder.add(InlineKeyboardButton(text="« Назад", callback_data="back_to_main"))
     builder.adjust(1)

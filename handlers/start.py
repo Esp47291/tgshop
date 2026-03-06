@@ -1,7 +1,9 @@
 from datetime import datetime
+import random
+import string
 
 from aiogram import F, Router
-from aiogram.filters import Command, CommandStart
+from aiogram.filters import Command, CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from sqlalchemy.orm import Session
@@ -13,14 +15,24 @@ import keyboards as kb
 router = Router()
 
 
+def generate_unique_code(session):
+    while True:
+        code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        if not session.query(User).filter(User.referral_code == code).first():
+            return code
+
+
 def get_or_create_user(telegram_id: int, username: str, full_name: str, referrer_id: int = None):
     with SessionLocal() as session:
         user = session.query(User).filter(User.telegram_id == telegram_id).first()
         if not user:
-            # Генерация реферального кода
-            import random
-            import string
-            referral_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+            # Проверяем, существует ли реферер
+            if referrer_id:
+                referrer = session.query(User).filter(User.id == referrer_id).first()
+                if not referrer:
+                    referrer_id = None  # игнорируем невалидный referrer_id
+
+            referral_code = generate_unique_code(session)
 
             user = User(
                 telegram_id=telegram_id,
@@ -33,20 +45,15 @@ def get_or_create_user(telegram_id: int, username: str, full_name: str, referrer
             session.add(user)
             session.commit()
 
-            # Начисление бонуса рефереру
-            if referrer_id:
-                referrer = session.query(User).filter(User.id == referrer_id).first()
-                if referrer:
-                    referrer.balance += 10  # Бонус за приглашение
-                    session.commit()
+            # Бонус за регистрацию убран, так как не соответствует описанию
+            # Если нужен, можно добавить config.REFERRAL_REG_BONUS
 
         return user
 
 
 async def send_welcome_menu(message: Message):
-    """Функция для отправки приветственного меню (работает на всех платформах)"""
     user_name = message.from_user.first_name or "друг"
-    
+
     welcome_text = f"""👋 Привет, {user_name}!
 
 Добро пожаловать в Brude Seller Bot ✨
@@ -55,7 +62,6 @@ async def send_welcome_menu(message: Message):
 
 Ниже располагается меню, ознакамливайся 🎲"""
 
-    # Отправляем одно сообщение с reply keyboard (работает на мобильных и веб)
     await message.answer(
         welcome_text,
         parse_mode="HTML",
@@ -65,7 +71,6 @@ async def send_welcome_menu(message: Message):
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
-    # Обработка реферальной ссылки
     referrer_id = None
     if len(message.text.split()) > 1:
         ref_code = message.text.split()[1]
@@ -83,6 +88,16 @@ async def cmd_start(message: Message):
     )
 
     await send_welcome_menu(message)
+
+
+@router.message(Command("cancel"), StateFilter("*"))
+async def cancel_handler(message: Message, state: FSMContext) -> None:
+    current_state = await state.get_state()
+    if current_state is None:
+        await message.answer("Нет активного действия.", reply_markup=kb.main_menu())
+        return
+    await state.clear()
+    await message.answer("Действие отменено.", reply_markup=kb.main_menu())
 
 
 @router.message(Command("help"))
@@ -191,16 +206,12 @@ async def back_to_main(callback: CallbackQuery):
 
 @router.message(F.text.in_(["🏠 Главное меню", "Главное меню", "Меню", "Назад"]))
 async def return_to_main_menu(message: Message):
-    """Обработчик для возврата в главное меню"""
     await send_welcome_menu(message)
 
 
-# Обработчики для inline кнопок меню (для веб-версии)
 @router.callback_query(F.data == "menu_buy")
 async def menu_buy_handler(callback: CallbackQuery):
-    """Обработчик кнопки 'Купить аккаунты' из inline меню"""
     await callback.answer()
-    # Имитируем нажатие на кнопку меню
     callback.message.text = "Купить аккаунты 🛒"
     from handlers.buy import buy_accounts
     await buy_accounts(callback.message)
@@ -208,7 +219,6 @@ async def menu_buy_handler(callback: CallbackQuery):
 
 @router.callback_query(F.data == "menu_support")
 async def menu_support_handler(callback: CallbackQuery):
-    """Обработчик кнопки 'Поддержка' из inline меню"""
     await callback.answer()
     callback.message.text = "Поддержка 🌐"
     await support_handler(callback.message)
@@ -216,7 +226,6 @@ async def menu_support_handler(callback: CallbackQuery):
 
 @router.callback_query(F.data == "menu_faq")
 async def menu_faq_handler(callback: CallbackQuery):
-    """Обработчик кнопки 'FAQ' из inline меню"""
     await callback.answer()
     callback.message.text = "FAQ ❓"
     await faq_handler(callback.message)
@@ -224,7 +233,6 @@ async def menu_faq_handler(callback: CallbackQuery):
 
 @router.callback_query(F.data == "menu_reviews")
 async def menu_reviews_handler(callback: CallbackQuery):
-    """Обработчик кнопки 'Удачные сделки' из inline меню"""
     await callback.answer()
     callback.message.text = "Удачные сделки ✅"
     await successful_deals(callback.message)
@@ -232,7 +240,6 @@ async def menu_reviews_handler(callback: CallbackQuery):
 
 @router.callback_query(F.data == "menu_referral")
 async def menu_referral_handler(callback: CallbackQuery):
-    """Обработчик кнопки 'Реферальная система' из inline меню"""
     await callback.answer()
     callback.message.text = "Реферальная система 👤"
     from handlers.referral import referral_system
@@ -241,7 +248,6 @@ async def menu_referral_handler(callback: CallbackQuery):
 
 @router.callback_query(F.data == "menu_earn")
 async def menu_earn_handler(callback: CallbackQuery):
-    """Обработчик кнопки 'Заработать' из inline меню"""
     await callback.answer()
     callback.message.text = "Заработать 💰"
     from handlers.referral import earn_money
