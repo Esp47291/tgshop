@@ -20,13 +20,19 @@ def main_menu():
 
 def main_menu_inline():
     builder = InlineKeyboardBuilder()
-    builder.add(InlineKeyboardButton(text="🛒 Купить аккаунты", callback_data="menu_buy"))
-    builder.add(InlineKeyboardButton(text="🌐 Поддержка", callback_data="menu_support"))
-    builder.add(InlineKeyboardButton(text="❓ FAQ", callback_data="menu_faq"))
-    builder.add(InlineKeyboardButton(text="✅ Удачные сделки", callback_data="menu_reviews"))
-    builder.add(InlineKeyboardButton(text="👤 Реферальная система", callback_data="menu_referral"))
-    builder.add(InlineKeyboardButton(text="💰 Заработать", callback_data="menu_earn"))
+    builder.add(InlineKeyboardButton(text="Купить аккаунты 🛒", callback_data="menu_buy"))
+    builder.add(InlineKeyboardButton(text="Поддержка 🌐", callback_data="menu_support"))
+    builder.add(InlineKeyboardButton(text="FAQ", url="https://t.me/Exxcomm"))
+    builder.add(InlineKeyboardButton(text="Удачные сделки ✅", callback_data="menu_reviews"))
+    builder.add(InlineKeyboardButton(text="Реферальная система 👤", callback_data="menu_referral"))
+    builder.add(InlineKeyboardButton(text="Заработать 💰", callback_data="menu_earn"))
     builder.adjust(1, 2, 1, 1, 1)
+    return builder.as_markup()
+
+
+def faq_channel_button():
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text="Открыть FAQ | ПРАВИЛА", url="https://t.me/Exxcomm"))
     return builder.as_markup()
 
 def back_button():

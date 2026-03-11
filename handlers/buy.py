@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
@@ -17,6 +17,24 @@ class BuyStates(StatesGroup):
     choosing_package = State()
     custom_quantity = State()
     confirm_order = State()
+
+
+async def send_buy_menu_photo(message: Message, caption: str):
+    await message.answer_photo(
+        photo=FSInputFile(config.BUY_MENU_IMAGE),
+        caption=caption,
+        reply_markup=kb.buy_menu(),
+        parse_mode="Markdown"
+    )
+
+
+async def send_payment_menu_photo(message: Message, caption: str):
+    await message.answer_photo(
+        photo=FSInputFile(config.PAYMENT_MENU_IMAGE),
+        caption=caption,
+        reply_markup=kb.payment_methods(),
+        parse_mode="Markdown"
+    )
 
 
 @router.message(Command("buy"))
@@ -44,15 +62,12 @@ async def buy_accounts(message: Message):
 Нажми на кнопку свое кол-во чтобы приобрести аккаунты либо выбери из готовых паков
     """
 
-    await message.answer(
-        buy_text,
-        reply_markup=kb.buy_menu(),
-        parse_mode="Markdown"
-    )
+    await send_buy_menu_photo(message, buy_text)
 
 
 @router.callback_query(F.data.startswith("pack_"))
 async def choose_package(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
     package_type = callback.data.split("_")[1]
     package = config.PACKAGES[package_type.capitalize()]
 
@@ -72,15 +87,13 @@ async def choose_package(callback: CallbackQuery, state: FSMContext):
     Все верно? Выберите способ оплаты:
     """
 
-    await callback.message.edit_text(
-        confirm_text,
-        reply_markup=kb.payment_methods(),
-        parse_mode="Markdown"
-    )
+    await callback.message.delete()
+    await send_payment_menu_photo(callback.message, confirm_text)
 
 
 @router.callback_query(F.data == "custom_quantity")
 async def custom_quantity(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
     await callback.message.edit_text(
         "✏️ *Введите желаемое количество аккаунтов:*",
         parse_mode="Markdown"
@@ -123,11 +136,7 @@ async def process_quantity(message: Message, state: FSMContext):
         Все верно? Выберите способ оплаты:
         """
 
-        await message.answer(
-            confirm_text,
-            reply_markup=kb.payment_methods(),
-            parse_mode="Markdown"
-        )
+        await send_payment_menu_photo(message, confirm_text)
         # НЕ очищаем state, так как данные ещё нужны для оплаты
         # await state.clear()  # УДАЛЕНО
 
@@ -137,6 +146,7 @@ async def process_quantity(message: Message, state: FSMContext):
 
 @router.callback_query(F.data == "back_to_buy")
 async def back_to_buy_menu(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
     await state.clear()
     buy_text = """
     Шаг 1 из 3... Выбор количества для покупки
@@ -159,15 +169,13 @@ async def back_to_buy_menu(callback: CallbackQuery, state: FSMContext):
 Нажми на кнопку свое кол-во чтобы приобрести аккаунты либо выбери из готовых паков
     """
 
-    await callback.message.edit_text(
-        buy_text,
-        reply_markup=kb.buy_menu(),
-        parse_mode="Markdown"
-    )
+    await callback.message.delete()
+    await send_buy_menu_photo(callback.message, buy_text)
 
 
 @router.callback_query(F.data == "back_to_payment")
 async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
     data = await state.get_data()
 
     payment_text = f"""
@@ -180,8 +188,5 @@ async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
     Все верно? Выберите способ оплаты:
     """
 
-    await callback.message.edit_text(
-        payment_text,
-        reply_markup=kb.payment_methods(),
-        parse_mode="Markdown"
-    )
+    await callback.message.delete()
+    await send_payment_menu_photo(callback.message, payment_text)

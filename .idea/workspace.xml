@@ -4,20 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2738d7c1-29b6-411d-b282-f80e571a9174" name="Changes" comment="depps">
+    <list default="true" id="2738d7c1-29b6-411d-b282-f80e571a9174" name="Changes" comment="remake config settings">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Broodsellerbot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Broodsellerbot.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/bot.log" beforeDir="false" afterPath="$PROJECT_DIR$/data/bot.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/bot_database.db" beforeDir="false" afterPath="$PROJECT_DIR$/data/bot_database.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/buy.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/buy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/payments.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/payments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/referral.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/referral.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/support.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/support.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/keyboards.py" beforeDir="false" afterPath="$PROJECT_DIR$/keyboards.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,23 +15,23 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="third-work" />
+        <entry key="$PROJECT_DIR$" value="patch4" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Esp47291"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Esp47291&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Esp47291/swagashop.git",
-    "accountId": "27b98c4c-641a-46f0-9b67-e61af10ea2da"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Esp47291/swagashop.git&quot;,
+    &quot;accountId&quot;: &quot;27b98c4c-641a-46f0-9b67-e61af10ea2da&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -55,15 +43,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;patch4&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "patch5"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -87,7 +75,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772818778595</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="remake config settings">
+      <option name="closed" value="true" />
+      <created>1773230297412</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1773230297412</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -95,7 +91,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="patch5" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -103,6 +111,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="depps" />
-    <option name="LAST_COMMIT_MESSAGE" value="depps" />
+    <MESSAGE value="remake config settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="remake config settings" />
   </component>
 </project>

@@ -5,7 +5,7 @@ import string
 from aiogram import F, Router
 from aiogram.filters import Command, CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, FSInputFile
 from sqlalchemy.orm import Session
 
 import config
@@ -13,6 +13,14 @@ from database import SessionLocal, User
 import keyboards as kb
 
 router = Router()
+
+
+async def answer_with_inline_menu(message: Message, text: str, parse_mode: str = "HTML"):
+    await message.answer(
+        text,
+        parse_mode=parse_mode,
+        reply_markup=kb.main_menu_inline()
+    )
 
 
 def generate_unique_code(session):
@@ -62,10 +70,11 @@ async def send_welcome_menu(message: Message):
 
 Ниже располагается меню, ознакамливайся 🎲"""
 
-    await message.answer(
-        welcome_text,
+    await message.answer_photo(
+        photo=FSInputFile(config.START_MENU_IMAGE),
+        caption=welcome_text,
         parse_mode="HTML",
-        reply_markup=kb.main_menu()
+        reply_markup=kb.main_menu_inline()
     )
 
 
@@ -94,10 +103,10 @@ async def cmd_start(message: Message):
 async def cancel_handler(message: Message, state: FSMContext) -> None:
     current_state = await state.get_state()
     if current_state is None:
-        await message.answer("Нет активного действия.", reply_markup=kb.main_menu())
+        await answer_with_inline_menu(message, "Нет активного действия.")
         return
     await state.clear()
-    await message.answer("Действие отменено.", reply_markup=kb.main_menu())
+    await answer_with_inline_menu(message, "Действие отменено.")
 
 
 @router.message(Command("help"))
@@ -107,7 +116,7 @@ async def support_handler(message: Message):
     support_text = """
 🛎️ <b>Нужна помощь? Обращайся правильно!</b>
 🔹 Твой номер обращения: <code>#776825</code>
-🔹 Менеджер поддержки: @VenmoSell_Manager
+🔹 Менеджер поддержки: @Exxzest
 
 📌 <b>Правила обращения:</b>
 ✅ Будь вежлив и точен – опиши проблему четко и без лишних сообщений.
@@ -122,7 +131,7 @@ async def support_handler(message: Message):
 
 🔍 <b>Хочешь убедиться в нашей надежности?</b>
 📢 Присоединяйся к нашему официальному каналу:
-👉 <a href="https://t.me/your_channel">Отзывы & Анонсы</a>
+👉 <a href="https://t.me/brudesellerfb">Отзывы & Анонсы</a>
 
 <b>Здесь ты найдешь:</b>
 ✅ Реальные отзывы покупателей с пруфами
@@ -134,10 +143,20 @@ async def support_handler(message: Message):
 <b>P.S.</b> Все честно – мы ценим твое доверие! 😊
     """
 
-    await message.answer(
-        support_text,
+    await message.answer_photo(
+        photo=FSInputFile(config.SUPPORT_MENU_IMAGE),
+        caption=support_text,
         reply_markup=kb.support_keyboard(),
         parse_mode="HTML"
+    )
+
+
+@router.message(Command("faq"))
+async def faq_command_handler(message: Message):
+    await message.answer(
+        "FAQ | ПРАВИЛА",
+        reply_markup=kb.faq_channel_button(),
+        disable_web_page_preview=True
     )
 
 
@@ -148,7 +167,7 @@ async def successful_deals(message: Message):
     deals_text = """
  🔍 <b>Хочешь убедиться в нашей надежности?</b>
 📢 Присоединяйся к нашему официальному каналу:
-👉 <a href="https://t.me/your_channel">Отзывы & Анонсы</a>
+👉 <a href="https://t.me/brudesellerfb">Отзывы & Анонсы</a>
 
 <b>Здесь ты найдешь:</b>
 ✅ Реальные отзывы покупателей с пруфами
@@ -165,37 +184,6 @@ async def successful_deals(message: Message):
         parse_mode="HTML",
         disable_web_page_preview=True
     )
-
-
-@router.message(F.text == "📊 FAQ")
-@router.message(F.text == "FAQ")
-@router.message(F.text == "FAQ ❓")
-async def faq_handler(message: Message):
-    faq_text = """
-    ❓ *Часто задаваемые вопросы*
-
-    1. *Как происходит покупка?*
-    - Выбираете количество аккаунтов
-    - Оплачиваете через CryptoBot или криптовалюту
-    - Получаете товар после подтверждения платежа
-
-    2. *Сколько времени занимает доставка?*
-    - Мгновенно после подтверждения платежа (5-15 минут)
-
-    3. *Какие гарантии?*
-    - Полный возврат при нерабочем аккаунте
-    - Гарантия замены в течение 24 часов
-
-    4. *Как работает реферальная система?*
-    - Вы получаете 15% от суммы покупок ваших рефералов
-    - Выплаты аккаунтами или на баланс
-
-    5. *Как связаться с поддержкой?*
-    - Через меню "Тех. Поддержка"
-    - Напрямую менеджеру: @VenmoSell_Manager
-    """
-
-    await message.answer(faq_text, parse_mode="Markdown")
 
 
 @router.callback_query(F.data == "back_to_main")
@@ -222,13 +210,6 @@ async def menu_support_handler(callback: CallbackQuery):
     await callback.answer()
     callback.message.text = "Поддержка 🌐"
     await support_handler(callback.message)
-
-
-@router.callback_query(F.data == "menu_faq")
-async def menu_faq_handler(callback: CallbackQuery):
-    await callback.answer()
-    callback.message.text = "FAQ ❓"
-    await faq_handler(callback.message)
 
 
 @router.callback_query(F.data == "menu_reviews")

@@ -4,7 +4,7 @@ import random
 import logging
 
 from aiogram import Router, F, Bot
-from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, FSInputFile
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 import keyboards as kb
@@ -18,6 +18,15 @@ logger = logging.getLogger(__name__)
 payment_checker = CryptoPaymentChecker()
 
 
+async def send_payment_photo(message: Message, caption: str, reply_markup):
+    await message.answer_photo(
+        photo=FSInputFile(config.PAYMENT_MENU_IMAGE),
+        caption=caption,
+        reply_markup=reply_markup,
+        parse_mode="Markdown"
+    )
+
+
 class PaymentStates(StatesGroup):
     waiting_screenshot = State()
     waiting_transaction_hash = State()
@@ -25,6 +34,7 @@ class PaymentStates(StatesGroup):
 
 @router.callback_query(F.data == "payment_cryptobot")
 async def cryptobot_payment(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
     data = await state.get_data()
 
     with SessionLocal() as session:
@@ -84,11 +94,8 @@ ID заказа: `{order.order_id}`
                 [InlineKeyboardButton(text="« Назад", callback_data="back_to_payment")]
             ])
 
-            await callback.message.edit_text(
-                payment_text,
-                reply_mup=keyboard,
-                parse_mode="Markdown"
-            )
+            await callback.message.delete()
+            await send_payment_photo(callback.message, payment_text, keyboard)
         else:
             payment_text = f"""
 💳 *Оплата через CryptoBot*
@@ -102,15 +109,13 @@ ID заказа: `{order.order_id}`
 
 ⚠️ CryptoBot временно недоступен. Пожалуйста, используйте оплату криптовалютой.
 """
-            await callback.message.edit_text(
-                payment_text,
-                reply_markup=kb.payment_methods(),
-                parse_mode="Markdown"
-            )
+            await callback.message.delete()
+            await send_payment_photo(callback.message, payment_text, kb.payment_methods())
 
 
 @router.callback_query(F.data == "payment_crypto")
 async def crypto_payment(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
     data = await state.get_data()
 
     with SessionLocal() as session:
@@ -147,15 +152,13 @@ ID заказа: `{order.order_id}`
 Выберите сеть для оплаты:
 """
 
-        await callback.message.edit_text(
-            payment_text,
-            reply_markup=kb.crypto_networks(),
-            parse_mode="Markdown"
-        )
+        await callback.message.delete()
+        await send_payment_photo(callback.message, payment_text, kb.crypto_networks())
 
 
 @router.callback_query(F.data.startswith("network_"))
 async def choose_network(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
     network = callback.data.split("_")[1]
     data = await state.get_data()
 
@@ -216,11 +219,8 @@ async def choose_network(callback: CallbackQuery, state: FSMContext):
         [InlineKeyboardButton(text="« Назад", callback_data="back_to_payment")]
     ])
 
-    await callback.message.edit_text(
-        payment_text,
-        reply_markup=keyboard,
-        parse_mode="Markdown"
-    )
+    await callback.message.delete()
+    await send_payment_photo(callback.message, payment_text, keyboard)
 
     await state.set_state(PaymentStates.waiting_screenshot)
     await state.update_data(wallet_network=network, wallet_address=wallet_address)
@@ -359,6 +359,7 @@ async def copy_wallet_address(callback: CallbackQuery):
 
 @router.callback_query(F.data == "back_to_payment")
 async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
     data = await state.get_data()
 
     payment_text = f"""
@@ -371,11 +372,8 @@ async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
     Все верно? Выберите способ оплаты:
     """
 
-    await callback.message.edit_text(
-        payment_text,
-        reply_markup=kb.payment_methods(),
-        parse_mode="Markdown"
-    )
+    await callback.message.delete()
+    await send_payment_photo(callback.message, payment_text, kb.payment_methods())
 
 
 async def deliver_product(bot: Bot, order: Order, session):

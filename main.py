@@ -4,6 +4,7 @@ import os
 import sys
 import signal
 from aiogram import Bot, Dispatcher
+from aiogram.types import BotCommand
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -50,6 +51,14 @@ async def main():
     bot_info = await bot.get_me()
     config.BOT_USERNAME = bot_info.username
     logger.info(f"Bot username: @{config.BOT_USERNAME}")
+
+    await bot.set_my_commands([
+        BotCommand(command="start", description="Старт"),
+        BotCommand(command="buy", description="Купить аккаунты"),
+        BotCommand(command="help", description="Тех. Поддержка"),
+        BotCommand(command="reviews", description="Отзывы"),
+        BotCommand(command="faq", description="FAQ"),
+    ])
 
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
