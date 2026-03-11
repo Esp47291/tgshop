@@ -2710,3 +2710,175 @@ aiogram.exceptions.TelegramNetworkError: HTTP Client says - ClientConnectorError
 2026-01-15 15:40:27,295 - aiogram.dispatcher - INFO - Start polling
 2026-01-15 15:40:35,817 - aiogram.dispatcher - INFO - Polling stopped
 2026-01-15 15:40:46,618 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-09 17:36:57,324 - __main__ - INFO - Используется BOT_TOKEN: 8786505293:AAGlQmEyv... (из .env файла)
+2026-03-09 17:36:59,742 - __main__ - INFO - Bot username: @test22131_bot
+2026-03-09 17:36:59,747 - __main__ - INFO - Бот запущен!
+2026-03-09 17:36:59,951 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000217699722D0>
+2026-03-09 17:36:59,951 - asyncio - ERROR - Unclosed connector
+connections: ['[(<aiohttp.client_proto.ResponseHandler object at 0x0000021769822630>, 185575.812)]']
+connector: <aiohttp.connector.TCPConnector object at 0x0000021767EF4860>
+2026-03-09 17:41:54,549 - __main__ - INFO - Используется BOT_TOKEN: 8077618081:AAHvfkJ8n... (из .env файла)
+2026-03-09 17:41:56,995 - __main__ - INFO - Bot username: @Brude_Seller_Bot
+2026-03-09 17:41:56,997 - __main__ - INFO - Бот запущен!
+2026-03-09 17:41:56,997 - aiogram.dispatcher - INFO - Start polling
+2026-03-09 17:43:14,754 - aiogram.event - INFO - Update id=232985689 is handled. Duration 4516 ms by bot id=8077618081
+2026-03-09 17:43:25,312 - aiogram.event - INFO - Update id=232985690 is handled. Duration 1359 ms by bot id=8077618081
+2026-03-09 17:43:30,933 - aiogram.event - INFO - Update id=232985691 is handled. Duration 781 ms by bot id=8077618081
+2026-03-09 17:43:40,857 - aiogram.event - INFO - Update id=232985692 is handled. Duration 1546 ms by bot id=8077618081
+2026-03-09 17:43:47,441 - aiogram.event - INFO - Update id=232985693 is handled. Duration 2531 ms by bot id=8077618081
+2026-03-09 17:43:49,841 - aiogram.event - INFO - Update id=232985694 is handled. Duration 2453 ms by bot id=8077618081
+2026-03-09 17:43:52,236 - aiogram.event - INFO - Update id=232985695 is handled. Duration 750 ms by bot id=8077618081
+2026-03-09 17:43:59,441 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-09 17:43:59,696 - __main__ - INFO - Shutting down bot...
+2026-03-09 17:43:59,765 - __main__ - INFO - Бот остановлен по команде пользователя
+2026-03-09 17:45:25,341 - __main__ - INFO - Используется BOT_TOKEN: 8077618081:AAHvfkJ8n... (из .env файла)
+2026-03-09 17:45:27,745 - __main__ - INFO - Bot username: @Brude_Seller_Bot
+2026-03-09 17:45:27,748 - __main__ - INFO - Бот запущен!
+2026-03-09 17:45:27,748 - aiogram.dispatcher - INFO - Start polling
+2026-03-09 17:45:32,992 - aiogram.event - INFO - Update id=232985696 is handled. Duration 2046 ms by bot id=8077618081
+2026-03-09 17:45:37,558 - aiogram.event - INFO - Update id=232985697 is handled. Duration 1875 ms by bot id=8077618081
+2026-03-09 17:45:40,275 - aiogram.event - INFO - Update id=232985698 is handled. Duration 1312 ms by bot id=8077618081
+2026-03-09 17:45:43,218 - aiogram.event - INFO - Update id=232985699 is handled. Duration 390 ms by bot id=8077618081
+2026-03-09 17:45:46,585 - aiogram.event - INFO - Update id=232985700 is handled. Duration 718 ms by bot id=8077618081
+2026-03-09 17:45:48,369 - aiogram.event - INFO - Update id=232985701 is handled. Duration 687 ms by bot id=8077618081
+2026-03-09 17:45:52,137 - aiogram.event - INFO - Update id=232985702 is handled. Duration 687 ms by bot id=8077618081
+2026-03-09 17:45:54,746 - aiogram.event - INFO - Update id=232985703 is handled. Duration 735 ms by bot id=8077618081
+2026-03-09 17:45:57,450 - aiogram.event - INFO - Update id=232985704 is handled. Duration 921 ms by bot id=8077618081
+2026-03-09 17:45:58,341 - aiogram.event - INFO - Update id=232985705 is handled. Duration 92 ms by bot id=8077618081
+2026-03-09 17:46:06,121 - aiogram.event - INFO - Update id=232985706 is handled. Duration 578 ms by bot id=8077618081
+2026-03-09 17:46:07,416 - aiogram.event - INFO - Update id=232985707 is handled. Duration 391 ms by bot id=8077618081
+2026-03-09 17:46:10,288 - aiogram.event - INFO - Update id=232985708 is handled. Duration 1266 ms by bot id=8077618081
+2026-03-09 17:46:12,014 - aiogram.event - INFO - Update id=232985709 is handled. Duration 842 ms by bot id=8077618081
+2026-03-09 17:46:15,944 - aiogram.event - INFO - Update id=232985710 is handled. Duration 1953 ms by bot id=8077618081
+2026-03-09 17:46:17,476 - aiogram.event - INFO - Update id=232985711 is handled. Duration 483 ms by bot id=8077618081
+2026-03-09 17:46:19,559 - aiogram.event - INFO - Update id=232985712 is handled. Duration 703 ms by bot id=8077618081
+2026-03-09 17:46:22,523 - aiogram.event - INFO - Update id=232985713 is handled. Duration 452 ms by bot id=8077618081
+2026-03-09 17:46:36,123 - aiogram.event - INFO - Update id=232985714 is handled. Duration 875 ms by bot id=8077618081
+2026-03-09 17:46:41,577 - aiogram.event - INFO - Update id=232985715 is handled. Duration 1750 ms by bot id=8077618081
+2026-03-09 17:47:19,142 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-09 17:47:19,402 - __main__ - INFO - Shutting down bot...
+2026-03-09 17:47:19,421 - __main__ - INFO - Бот остановлен по команде пользователя
+2026-03-09 17:47:29,597 - __main__ - INFO - Используется BOT_TOKEN: 8077618081:AAHvfkJ8n... (из .env файла)
+2026-03-09 17:47:31,966 - __main__ - INFO - Bot username: @Brude_Seller_Bot
+2026-03-09 17:47:31,978 - __main__ - INFO - Бот запущен!
+2026-03-09 17:47:31,979 - aiogram.dispatcher - INFO - Start polling
+2026-03-09 17:47:41,186 - aiogram.event - INFO - Update id=232985716 is handled. Duration 2531 ms by bot id=8077618081
+2026-03-09 17:47:44,407 - aiogram.event - INFO - Update id=232985717 is handled. Duration 3546 ms by bot id=8077618081
+2026-03-09 17:47:44,745 - aiogram.event - INFO - Update id=232985718 is handled. Duration 937 ms by bot id=8077618081
+2026-03-09 17:47:55,545 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-09 17:47:55,816 - __main__ - INFO - Shutting down bot...
+2026-03-09 17:47:55,841 - __main__ - INFO - Бот остановлен по команде пользователя
+2026-03-09 17:50:21,031 - __main__ - INFO - Используется BOT_TOKEN: 8077618081:AAHvfkJ8n... (из .env файла)
+2026-03-09 17:50:23,407 - __main__ - INFO - Bot username: @Brude_Seller_Bot
+2026-03-09 17:50:23,407 - __main__ - INFO - Бот запущен!
+2026-03-09 17:50:23,411 - aiogram.dispatcher - INFO - Start polling
+2026-03-09 17:50:32,557 - aiogram.event - INFO - Update id=232985719 is handled. Duration 3719 ms by bot id=8077618081
+2026-03-09 17:50:49,208 - aiogram.event - INFO - Update id=232985720 is handled. Duration 15 ms by bot id=8077618081
+2026-03-09 17:50:56,467 - aiogram.event - INFO - Update id=232985721 is handled. Duration 2562 ms by bot id=8077618081
+2026-03-09 17:50:58,024 - aiogram.event - INFO - Update id=232985722 is not handled. Duration 3171 ms by bot id=8077618081
+2026-03-09 17:50:58,025 - aiogram.event - ERROR - Cause exception while process update id=232985722 by bot id=8077618081
+TelegramBadRequest: Telegram server says - Bad Request: can't parse entities: Can't find end of the entity starting at byte offset 1107
+Traceback (most recent call last):
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 137, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 170, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 137, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 162, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\handlers\start.py", line 198, in faq_handler
+    await message.answer(faq_text, parse_mode="Markdown")
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\methods\base.py", line 84, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\client\bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\client\session\base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\client\session\aiohttp.py", line 189, in make_request
+    response = self.check_response(
+               ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Computer\PycharmProjects\swagashop\.venv\Lib\site-packages\aiogram\client\session\base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: can't parse entities: Can't find end of the entity starting at byte offset 1107
+2026-03-09 17:51:03,561 - aiogram.event - INFO - Update id=232985723 is handled. Duration 2844 ms by bot id=8077618081
+2026-03-09 17:55:13,051 - aiogram.event - INFO - Update id=232985724 is handled. Duration 2875 ms by bot id=8077618081
+2026-03-09 17:55:22,838 - aiogram.event - INFO - Update id=232985725 is handled. Duration 171 ms by bot id=8077618081
+2026-03-09 17:55:26,631 - aiogram.event - INFO - Update id=232985726 is handled. Duration 1360 ms by bot id=8077618081
+2026-03-09 17:56:27,963 - aiogram.event - INFO - Update id=232985727 is handled. Duration 4312 ms by bot id=8077618081
+2026-03-09 17:56:30,479 - aiogram.event - INFO - Update id=232985728 is handled. Duration 94 ms by bot id=8077618081
+2026-03-09 17:56:34,935 - aiogram.event - INFO - Update id=232985729 is handled. Duration 453 ms by bot id=8077618081
+2026-03-09 17:56:42,246 - aiogram.event - INFO - Update id=232985730 is handled. Duration 1172 ms by bot id=8077618081
+2026-03-09 17:58:44,662 - aiogram.event - INFO - Update id=232985731 is handled. Duration 1937 ms by bot id=8077618081
+2026-03-09 17:58:50,748 - aiogram.event - INFO - Update id=232985732 is handled. Duration 953 ms by bot id=8077618081
+2026-03-09 17:58:53,706 - aiogram.event - INFO - Update id=232985733 is handled. Duration 546 ms by bot id=8077618081
+2026-03-09 17:59:35,558 - aiogram.event - INFO - Update id=232985734 is handled. Duration 2797 ms by bot id=8077618081
+2026-03-09 17:59:39,874 - aiogram.event - INFO - Update id=232985735 is handled. Duration 141 ms by bot id=8077618081
+2026-03-09 18:00:13,793 - aiogram.event - INFO - Update id=232985736 is handled. Duration 5391 ms by bot id=8077618081
+2026-03-09 18:02:09,865 - aiogram.event - INFO - Update id=232985737 is handled. Duration 2469 ms by bot id=8077618081
+2026-03-09 18:02:12,180 - aiogram.event - INFO - Update id=232985738 is handled. Duration 0 ms by bot id=8077618081
+2026-03-09 18:02:19,409 - aiogram.event - INFO - Update id=232985739 is handled. Duration 30 ms by bot id=8077618081
+2026-03-09 18:02:31,588 - aiogram.event - INFO - Update id=232985740 is handled. Duration 0 ms by bot id=8077618081
+2026-03-09 18:09:06,872 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-09 18:09:07,153 - __main__ - INFO - Shutting down bot...
+2026-03-09 18:09:07,200 - __main__ - INFO - Бот остановлен по команде пользователя
+2026-03-09 18:23:39,914 - __main__ - INFO - Используется BOT_TOKEN: 8077618081:AAHvfkJ8n... (из .env файла)
+2026-03-09 18:23:42,320 - __main__ - INFO - Bot username: @Brude_Seller_Bot
+2026-03-09 18:23:42,322 - __main__ - INFO - Бот запущен!
+2026-03-09 18:23:42,323 - aiogram.dispatcher - INFO - Start polling
+2026-03-09 18:23:54,276 - aiogram.event - INFO - Update id=232985741 is handled. Duration 2405 ms by bot id=8077618081
+2026-03-09 18:24:00,611 - aiogram.event - INFO - Update id=232985742 is handled. Duration 203 ms by bot id=8077618081
+2026-03-09 18:24:06,994 - aiogram.event - INFO - Update id=232985743 is handled. Duration 1671 ms by bot id=8077618081
+2026-03-09 18:24:14,258 - aiogram.event - INFO - Update id=232985744 is handled. Duration 1907 ms by bot id=8077618081
+2026-03-09 18:24:16,354 - aiogram.event - INFO - Update id=232985745 is handled. Duration 625 ms by bot id=8077618081
+2026-03-09 18:24:19,147 - aiogram.event - INFO - Update id=232985746 is handled. Duration 171 ms by bot id=8077618081
+2026-03-09 18:24:21,420 - aiogram.event - INFO - Update id=232985747 is handled. Duration 453 ms by bot id=8077618081
+2026-03-09 18:24:25,021 - aiogram.event - INFO - Update id=232985748 is handled. Duration 1202 ms by bot id=8077618081
+2026-03-09 18:24:35,754 - aiogram.event - INFO - Update id=232985749 is handled. Duration 4375 ms by bot id=8077618081
+2026-03-09 18:24:42,738 - aiogram.event - INFO - Update id=232985750 is handled. Duration 5608 ms by bot id=8077618081
+2026-03-09 20:07:06,237 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2026-03-09 20:07:06,289 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8077618081)

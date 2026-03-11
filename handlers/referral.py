@@ -23,7 +23,7 @@ async def referral_system(message: Message):
         referral_text = f"""
         👥 *Реферальная система*
 
-        @Venmo_Seller_Bot
+        @Brude_Seller_Bot
 
         ---
         *Зарабатывай с нашей реферальной программой!*

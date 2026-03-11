@@ -35,8 +35,8 @@ else:
     print("⚠️ ВНИМАНИЕ: ADMIN_IDS не установлен! Админ-панель будет недоступна")
     print("   Чтобы исправить: откройте .env и замените YOUR_ADMIN_ID_HERE на ваш ID от @userinfobot")
 
-SUPPORT_MANAGER_ID = os.getenv("SUPPORT_MANAGER_ID", "@VenmoSell_Manager")
-CHANNEL_ID = os.getenv("CHANNEL_ID", "@reviews_channel")
+SUPPORT_MANAGER_ID = os.getenv("5324231382", "@exxzest")
+CHANNEL_ID = os.getenv("-1002377898890", "@brudesellerfb")
 
 WALLETS = {
     "USDT_TRC20": os.getenv("USDT_TRC20", ""),
@@ -47,43 +47,43 @@ WALLETS = {
 }
 
 PRICES = {
-    "1-20": float(os.getenv("PRICE_1_20", "105")),
-    "20-50": float(os.getenv("PRICE_20_50", "95")),
-    "50-100": float(os.getenv("PRICE_50_100", "85"))
+    "1-19": float(os.getenv("PRICE_1_20", "10")),
+    "20-49": float(os.getenv("PRICE_20_50", "9")),
+    "50-100": float(os.getenv("PRICE_50_100", "8"))
 }
 
 PACKAGES = {
     "Lite": {
         "quantity": int(os.getenv("PACK_LITE_QTY", "1")),
-        "price": float(os.getenv("PACK_LITE_PRICE", "105"))
+        "price": float(os.getenv("PACK_LITE_PRICE", "10"))
     },
     "Starter": {
         "quantity": int(os.getenv("PACK_STARTER_QTY", "3")),
-        "price": float(os.getenv("PACK_STARTER_PRICE", "315"))
+        "price": float(os.getenv("PACK_STARTER_PRICE", "30"))
     },
     "Smart": {
         "quantity": int(os.getenv("PACK_SMART_QTY", "5")),
-        "price": float(os.getenv("PACK_SMART_PRICE", "525"))
+        "price": float(os.getenv("PACK_SMART_PRICE", "50"))
     },
     "Pro": {
         "quantity": int(os.getenv("PACK_PRO_QTY", "10")),
-        "price": float(os.getenv("PACK_PRO_PRICE", "1050"))
+        "price": float(os.getenv("PACK_PRO_PRICE", "100"))
     },
     "Premium": {
         "quantity": int(os.getenv("PACK_PREMIUM_QTY", "20")),
-        "price": float(os.getenv("PACK_PREMIUM_PRICE", "2100"))
+        "price": float(os.getenv("PACK_PREMIUM_PRICE", "180"))
     },
     "Ultimate": {
         "quantity": int(os.getenv("PACK_ULTIMATE_QTY", "30")),
-        "price": float(os.getenv("PACK_ULTIMATE_PRICE", "3150"))
+        "price": float(os.getenv("PACK_ULTIMATE_PRICE", "270"))
     }
 }
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///data/bot_database.db")
 REFERRAL_PERCENT = float(os.getenv("REFERRAL_PERCENT", "15"))
-PRODUCT_NAME = os.getenv("PRODUCT_NAME", "Venmo Accounts")
+PRODUCT_NAME = os.getenv("PRODUCT_NAME", "Brude accounts")
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 LOG_FILE = os.getenv("LOG_FILE", "data/bot.log")
 
 # Добавляем переменную для username бота (будет заполнена при запуске)
-BOT_USERNAME = None
+BOT_USERNAME ="Brude_Seller_Bot"

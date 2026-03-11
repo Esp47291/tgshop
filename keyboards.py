@@ -86,7 +86,7 @@ def back_to_buy():
 def support_keyboard():
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="📝 Создать обращение", callback_data="create_ticket"))
-    builder.add(InlineKeyboardButton(text="📞 Связаться с менеджером", url="https://t.me/VenmoSell_Manager"))
+    builder.add(InlineKeyboardButton(text="📞 Связаться с менеджером", url="https://t.me/Exxzest"))
     builder.add(InlineKeyboardButton(text="📝 Оставить отзыв", callback_data="leave_review"))
     builder.add(InlineKeyboardButton(text="« Вернуться назад", callback_data="back_to_main"))
     builder.adjust(1)

@@ -38,7 +38,7 @@ async def cryptobot_payment(callback: CallbackQuery, state: FSMContext):
             user_id=user.id,
             product="Venmo Accounts",
             quantity=data.get("quantity", 1),
-            amount=data.get("price", 105),
+            amount=data.get("price", 10),
             status="pending",
             payment_method="CryptoBot",
             created_at=datetime.utcnow()
@@ -53,7 +53,7 @@ async def cryptobot_payment(callback: CallbackQuery, state: FSMContext):
 
         if cryptobot:
             invoice = await cryptobot.create_invoice(
-                amount=data.get("price", 105),
+                amount=data.get("price", 10),
                 description=f"Заказ {order.order_id} - Venmo Accounts x{data.get('quantity', 1)}",
                 payload=str(order.id)
             )
@@ -73,7 +73,7 @@ async def cryptobot_payment(callback: CallbackQuery, state: FSMContext):
 ID заказа: `{order.order_id}`
 Товар: Venmo Accounts
 Количество: {data.get('quantity', 1)} шт
-Сумма заказа: {data.get('price', 105)}$
+Сумма заказа: {data.get('price', 10)}$
 
 Нажмите кнопку ниже для оплаты:
 """
@@ -98,7 +98,7 @@ ID заказа: `{order.order_id}`
 ID заказа: `{order.order_id}`
 Товар: Venmo Accounts
 Количество: {data.get('quantity', 1)} шт
-Сумма заказа: {data.get('price', 105)}$
+Сумма заказа: {data.get('price', 10)}$
 
 ⚠️ CryptoBot временно недоступен. Пожалуйста, используйте оплату криптовалютой.
 """
@@ -124,7 +124,7 @@ async def crypto_payment(callback: CallbackQuery, state: FSMContext):
             user_id=user.id,
             product="Venmo Accounts",
             quantity=data.get("quantity", 1),
-            amount=data.get("price", 105),
+            amount=data.get("price", 10),
             status="pending",
             payment_method="Crypto",
             created_at=datetime.utcnow()
@@ -142,7 +142,7 @@ async def crypto_payment(callback: CallbackQuery, state: FSMContext):
 ID заказа: `{order.order_id}`
 Товар: Venmo Accounts
 Количество: {data.get('quantity', 1)} шт
-Сумма к оплате: {data.get('price', 105)}$
+Сумма к оплате: {data.get('price', 10)}$
 
 Выберите сеть для оплаты:
 """
@@ -195,7 +195,7 @@ async def choose_network(callback: CallbackQuery, state: FSMContext):
 
 *Инструкция по оплате:*
 
-1️⃣ Отправьте *{data.get('price', 105)}$* на адрес:
+1️⃣ Отправьте *{data.get('price', 10)}$* на адрес:
 
     2️⃣ После отправки:
        • Отправьте скриншот транзакции (фото)

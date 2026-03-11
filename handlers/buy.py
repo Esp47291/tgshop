@@ -37,8 +37,8 @@ async def buy_accounts(message: Message):
 Кхм, перейдем к количеству 
 Вот прайс лист на аккаунты💎
 
-От 1 до 20 Штук - 10$💰
-От 20 до 50 Штук - 9$💰
+От 1 до 19 Штук - 10$💰
+От 20 до 49 Штук - 9$💰
 От 50 до 100 Штук - 8$💰
 
 Нажми на кнопку свое кол-во чтобы приобрести аккаунты либо выбери из готовых паков
@@ -95,11 +95,11 @@ async def process_quantity(message: Message, state: FSMContext):
         if quantity < 1:
             raise ValueError
 
-        if 1 <= quantity <= 20:
-            price_per = config.PRICES["1-20"]
-        elif 20 <= quantity <= 50:
-            price_per = config.PRICES["20-50"]
-        elif quantity > 50:
+        if 1 <= quantity <= 19:
+            price_per = config.PRICES["1-19"]
+        elif 20 <= quantity <= 49:
+            price_per = config.PRICES["20-49"]
+        elif quantity >= 50:
             price_per = config.PRICES["50-100"]
         else:
             price_per = config.PRICES["1-20"]
@@ -152,8 +152,8 @@ async def back_to_buy_menu(callback: CallbackQuery, state: FSMContext):
 Кхм, перейдем к количеству 
 Вот прайс лист на аккаунты💎
 
-От 1 до 20 Штук - 10$💰
-От 20 до 50 Штук - 9$💰
+От 1 до 19 Штук - 10$💰
+От 20 до 49 Штук - 9$💰
 От 50 до 100 Штук - 8$💰
 
 Нажми на кнопку свое кол-во чтобы приобрести аккаунты либо выбери из готовых паков
@@ -175,7 +175,7 @@ async def back_to_payment_methods(callback: CallbackQuery, state: FSMContext):
 
     Товар: Venmo Accounts
     Количество: {data.get('quantity', 1)} шт
-    Сумма: {data.get('price', 105)}$
+    Сумма: {data.get('price', 10)}$
 
     Все верно? Выберите способ оплаты:
     """

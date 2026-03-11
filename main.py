@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import sys
 import signal
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -28,7 +29,6 @@ os.makedirs("data/screenshots", exist_ok=True)
 
 async def shutdown(bot: Bot):
     logger.info("Shutting down bot...")
-    # Здесь можно закрыть соединения, если есть
     await bot.session.close()
 
 
@@ -64,12 +64,13 @@ async def main():
 
     logger.info("Бот запущен!")
 
-    # Обработка сигналов для graceful shutdown
-    loop = asyncio.get_event_loop()
-    for sig in (signal.SIGTERM, signal.SIGINT):
-        loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(bot)))
+    # Обработка сигналов только для Unix-подобных систем
+    if sys.platform != 'win32':
+        loop = asyncio.get_running_loop()
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(bot)))
 
-    # Запуск поллинга
+    # Запуск поллинга с корректным завершением
     try:
         await dp.start_polling(bot)
     finally:
@@ -80,4 +81,6 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.info("Бот остановлен")
+        logger.info("Бот остановлен по команде пользователя")
+    except Exception as e:
+        logger.exception(f"Необработанная ошибка: {e}")

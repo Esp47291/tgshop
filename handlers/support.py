@@ -24,7 +24,7 @@ async def leave_review(callback: CallbackQuery):
         "📝 *Оставить отзыв*\n\n"
         "Чтобы оставить отзыв, напишите нам в личные сообщения:\n"
         f"@{config.SUPPORT_MANAGER_ID.replace('@', '')}\n\n"
-        "Лучшие отзывы публикуются в нашем канале!",
+        "Лучшие отзывы публикуются в нашем канале! @brudesellerfb",
         parse_mode="Markdown",
         reply_markup=kb.back_button()
     )
