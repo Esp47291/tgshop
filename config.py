@@ -3,6 +3,10 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+IMAGES_DIR = os.path.join(DATA_DIR, "images")
+
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 
 print(f"BOT_TOKEN (первые 10 символов): {BOT_TOKEN[:10]}...")
@@ -88,19 +92,12 @@ LOG_FILE = os.getenv("LOG_FILE", "data/bot.log")
 # Добавляем переменную для username бота (будет заполнена при запуске)
 BOT_USERNAME ="Brude_Seller_Bot"
 
-START_MENU_IMAGE = os.getenv(
-    "START_MENU_IMAGE",
-    r"C:\Users\Computer\.cursor\projects\c-Users-Computer-PycharmProjects-swagashop\assets\c__Users_Computer_AppData_Roaming_Cursor_User_workspaceStorage_19950d57e7e116fbeda5ea3a6f8dd0f9_images_image-78a295bd-77ad-4281-9b4f-01e0e130e9c3.png"
-)
-SUPPORT_MENU_IMAGE = os.getenv(
-    "SUPPORT_MENU_IMAGE",
-    r"C:\Users\Computer\.cursor\projects\c-Users-Computer-PycharmProjects-swagashop\assets\c__Users_Computer_AppData_Roaming_Cursor_User_workspaceStorage_19950d57e7e116fbeda5ea3a6f8dd0f9_images_image-b8fc15fb-9b21-4d97-a2db-851356afdfa9.png"
-)
-BUY_MENU_IMAGE = os.getenv(
-    "BUY_MENU_IMAGE",
-    r"C:\Users\Computer\.cursor\projects\c-Users-Computer-PycharmProjects-swagashop\assets\c__Users_Computer_AppData_Roaming_Cursor_User_workspaceStorage_19950d57e7e116fbeda5ea3a6f8dd0f9_images_image-a066cf51-5799-493c-9be8-9f1f99a017fe.png"
-)
-PAYMENT_MENU_IMAGE = os.getenv(
-    "PAYMENT_MENU_IMAGE",
-    r"C:\Users\Computer\.cursor\projects\c-Users-Computer-PycharmProjects-swagashop\assets\c__Users_Computer_AppData_Roaming_Cursor_User_workspaceStorage_19950d57e7e116fbeda5ea3a6f8dd0f9_images_image-536cff63-39a2-4129-8cc2-e1a6c2a70254.png"
-)
+START_MENU_FILE_ID = os.getenv("START_MENU_FILE_ID", "")
+SUPPORT_MENU_FILE_ID = os.getenv("SUPPORT_MENU_FILE_ID", "")
+BUY_MENU_FILE_ID = os.getenv("BUY_MENU_FILE_ID", "")
+PAYMENT_MENU_FILE_ID = os.getenv("PAYMENT_MENU_FILE_ID", "")
+
+START_MENU_IMAGE = os.getenv("START_MENU_IMAGE", os.path.join(IMAGES_DIR, "start_menu.png"))
+SUPPORT_MENU_IMAGE = os.getenv("SUPPORT_MENU_IMAGE", os.path.join(IMAGES_DIR, "support_menu.png"))
+BUY_MENU_IMAGE = os.getenv("BUY_MENU_IMAGE", os.path.join(IMAGES_DIR, "buy_menu.png"))
+PAYMENT_MENU_IMAGE = os.getenv("PAYMENT_MENU_IMAGE", os.path.join(IMAGES_DIR, "payment_menu.png"))

@@ -5,14 +5,20 @@ import string
 from aiogram import F, Router
 from aiogram.filters import Command, CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message, FSInputFile
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import CallbackQuery, Message
 from sqlalchemy.orm import Session
 
 import config
 from database import SessionLocal, User
 import keyboards as kb
+from utils.media_utils import resolve_photo_source
 
 router = Router()
+
+
+class DebugStates(StatesGroup):
+    waiting_file_id_photo = State()
 
 
 async def answer_with_inline_menu(message: Message, text: str, parse_mode: str = "HTML"):
@@ -71,10 +77,11 @@ async def send_welcome_menu(message: Message):
 Ниже располагается меню, ознакамливайся 🎲"""
 
     await message.answer_photo(
-        photo=FSInputFile(config.START_MENU_IMAGE),
+        photo=resolve_photo_source(config.START_MENU_FILE_ID, config.START_MENU_IMAGE),
         caption=welcome_text,
         parse_mode="HTML",
-        reply_markup=kb.main_menu_inline()
+        reply_markup=kb.main_menu_inline(),
+        request_timeout=180
     )
 
 
@@ -144,10 +151,11 @@ async def support_handler(message: Message):
     """
 
     await message.answer_photo(
-        photo=FSInputFile(config.SUPPORT_MENU_IMAGE),
+        photo=resolve_photo_source(config.SUPPORT_MENU_FILE_ID, config.SUPPORT_MENU_IMAGE),
         caption=support_text,
         reply_markup=kb.support_keyboard(),
-        parse_mode="HTML"
+        parse_mode="HTML",
+        request_timeout=180
     )
 
 
@@ -158,6 +166,40 @@ async def faq_command_handler(message: Message):
         reply_markup=kb.faq_channel_button(),
         disable_web_page_preview=True
     )
+
+
+@router.message(Command("fileid"))
+async def fileid_command_handler(message: Message, state: FSMContext):
+    if message.from_user.id not in config.ADMIN_IDS:
+        return
+
+    await state.set_state(DebugStates.waiting_file_id_photo)
+    await message.answer(
+        "Отправь следующим сообщением одну фотографию, и я верну ее `file_id`.",
+        parse_mode="Markdown"
+    )
+
+
+@router.message(DebugStates.waiting_file_id_photo, F.photo)
+async def fileid_photo_handler(message: Message, state: FSMContext):
+    if message.from_user.id not in config.ADMIN_IDS:
+        await state.clear()
+        return
+
+    photo = message.photo[-1]
+    await message.answer(
+        f"file_id:\n{photo.file_id}\n\nfile_unique_id:\n{photo.file_unique_id}",
+        parse_mode=None
+    )
+    await state.clear()
+
+
+@router.message(DebugStates.waiting_file_id_photo)
+async def fileid_invalid_message_handler(message: Message):
+    if message.from_user.id not in config.ADMIN_IDS:
+        return
+
+    await message.answer("Нужно отправить именно фото.")
 
 
 @router.message(Command("reviews"))
@@ -200,7 +242,6 @@ async def return_to_main_menu(message: Message):
 @router.callback_query(F.data == "menu_buy")
 async def menu_buy_handler(callback: CallbackQuery):
     await callback.answer()
-    callback.message.text = "Купить аккаунты 🛒"
     from handlers.buy import buy_accounts
     await buy_accounts(callback.message)
 
@@ -208,21 +249,18 @@ async def menu_buy_handler(callback: CallbackQuery):
 @router.callback_query(F.data == "menu_support")
 async def menu_support_handler(callback: CallbackQuery):
     await callback.answer()
-    callback.message.text = "Поддержка 🌐"
     await support_handler(callback.message)
 
 
 @router.callback_query(F.data == "menu_reviews")
 async def menu_reviews_handler(callback: CallbackQuery):
     await callback.answer()
-    callback.message.text = "Удачные сделки ✅"
     await successful_deals(callback.message)
 
 
 @router.callback_query(F.data == "menu_referral")
 async def menu_referral_handler(callback: CallbackQuery):
     await callback.answer()
-    callback.message.text = "Реферальная система 👤"
     from handlers.referral import referral_system
     await referral_system(callback.message)
 
@@ -230,6 +268,5 @@ async def menu_referral_handler(callback: CallbackQuery):
 @router.callback_query(F.data == "menu_earn")
 async def menu_earn_handler(callback: CallbackQuery):
     await callback.answer()
-    callback.message.text = "Заработать 💰"
     from handlers.referral import earn_money
     await earn_money(callback.message)

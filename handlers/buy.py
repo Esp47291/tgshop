@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery, FSInputFile
+from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
@@ -8,6 +8,7 @@ import config
 from database import SessionLocal, Order, User
 from datetime import datetime
 import random
+from utils.media_utils import resolve_photo_source
 
 router = Router()
 
@@ -21,19 +22,21 @@ class BuyStates(StatesGroup):
 
 async def send_buy_menu_photo(message: Message, caption: str):
     await message.answer_photo(
-        photo=FSInputFile(config.BUY_MENU_IMAGE),
+        photo=resolve_photo_source(config.BUY_MENU_FILE_ID, config.BUY_MENU_IMAGE),
         caption=caption,
         reply_markup=kb.buy_menu(),
-        parse_mode="Markdown"
+        parse_mode="Markdown",
+        request_timeout=180
     )
 
 
 async def send_payment_menu_photo(message: Message, caption: str):
     await message.answer_photo(
-        photo=FSInputFile(config.PAYMENT_MENU_IMAGE),
+        photo=resolve_photo_source(config.PAYMENT_MENU_FILE_ID, config.PAYMENT_MENU_IMAGE),
         caption=caption,
         reply_markup=kb.payment_methods(),
-        parse_mode="Markdown"
+        parse_mode="Markdown",
+        request_timeout=180
     )
 
 

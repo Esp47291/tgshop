@@ -12,6 +12,11 @@ import config
 from database import init_db
 from handlers import start_router, buy_router, payments_router, support_router, referral_router, admin_router
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 # Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
@@ -58,6 +63,7 @@ async def main():
         BotCommand(command="help", description="Тех. Поддержка"),
         BotCommand(command="reviews", description="Отзывы"),
         BotCommand(command="faq", description="FAQ"),
+        BotCommand(command="fileid", description="Получить file_id фото"),
     ])
 
     storage = MemoryStorage()

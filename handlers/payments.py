@@ -4,13 +4,14 @@ import random
 import logging
 
 from aiogram import Router, F, Bot
-from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, FSInputFile
+from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 import keyboards as kb
 import config
 from database import SessionLocal, Order, Payment, User, Referral
 from utils.payment_utils import get_cryptobot_api, CryptoPaymentChecker
+from utils.media_utils import resolve_photo_source
 
 router = Router()
 logger = logging.getLogger(__name__)
@@ -20,10 +21,11 @@ payment_checker = CryptoPaymentChecker()
 
 async def send_payment_photo(message: Message, caption: str, reply_markup):
     await message.answer_photo(
-        photo=FSInputFile(config.PAYMENT_MENU_IMAGE),
+        photo=resolve_photo_source(config.PAYMENT_MENU_FILE_ID, config.PAYMENT_MENU_IMAGE),
         caption=caption,
         reply_markup=reply_markup,
-        parse_mode="Markdown"
+        parse_mode="Markdown",
+        request_timeout=180
     )
 
 
